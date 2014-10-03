@@ -7,6 +7,7 @@ A Tower defense game i made with Paolo-Perfahl
 
 Its a Tower defense game
 where you have to try to save the world from the evil disco guys who want to make the whole world a disco.
+luckily you have the disco lava and a bunch of other EPIC defense towers
 
 
 
