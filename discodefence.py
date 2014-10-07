@@ -319,12 +319,12 @@ w[0].set_colorkey((255,0,182))
 anim=0
 level=["hppppppppppppwpppppp",
        "ihpppppppppphipppppp",
-       "iihddhdddddhiidddddd",
-       "dddddddddddddddddddd",
-       "dddddddgwggddddddddd",
+       "idhddgdddddhiddddddd",
+       "dddddgdddddddddddddd",
+       "dddddgdgwggddddddddd",
        "dddddhdddddddggdvddd",
        "ddddghdddddkdddddddd",
-       "ggggghgdgggdggdggggg"]
+       "gggggggdgggdggdggggg"]
 legende={"h":h[anim],#towertop
          "p":p,#nothing
          "i":i[anim],#dirt
