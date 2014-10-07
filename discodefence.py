@@ -442,7 +442,13 @@ while mainloop:
                 DiscProjectile()
     pygame.display.set_caption("Frame rate: %.2f frames per second. Playtime: %.2f seconds" % (clock.get_fps(),playtime))
     pygame.display.flip()          # flip the screen like in a flipbook
-    
+    #sprite collide_________________________________________________________
+    for mymonster in monstergroup:
+         crashgroup = pygame.sprite.spritecollide(mymonster, projectilegroup, False)  # true würde dic löscen
+         for myprojectile in crashgroup:
+               mymonster.hitpoints-=1 # test for collision with bullet
+                                                
+                        
     #allgroup.clear(screen, background)
     allgroup.update(seconds)
     allgroup.draw(screen)
