@@ -27,6 +27,8 @@ playtime = 0.0
 FORCE_OF_GRAVITY=0.1
 ACTORSPEEDMAX=20
 ACTORSPEEDMIN=10
+DISCTHROWERRANGE=150
+DISCMAXSPEED=100
 
 
 playergroup = pygame.sprite.LayeredUpdates()
@@ -72,7 +74,9 @@ class DiscProjectile(pygame.sprite.Sprite):
         """a projectile of a Disc gun"""
         gravity = False # fragments fall down ?
         image=pygame.image.load("disc.png")
-        def __init__(self, pos=(random.randint(640,1024),random.randint(100,300))):
+        def __init__(self, pos=(random.randint(640,1024),random.randint(100,300)),
+                     dx= random.randint(-DISCMAXSPEED,DISCMAXSPEED),
+                     dy=random.randint(-DISCMAXSPEED,DISCMAXSPEED)):
             pygame.sprite.Sprite.__init__(self, self.groups)
             self.pos = [0.0,0.0]
             self.pos[0] = pos[0]
@@ -86,9 +90,9 @@ class DiscProjectile(pygame.sprite.Sprite):
             self.rect.center = self.pos #if you forget this line the sprite sit in the topleft corner
             self.lifetime = 1 + random.random()*5 # max 6 seconds
             self.time = 0.0
-            self.fragmentmaxspeed = 200  # try out other factors !
-            self.dx = random.randint(-self.fragmentmaxspeed,self.fragmentmaxspeed)
-            self.dy = random.randint(-self.fragmentmaxspeed,self.fragmentmaxspeed)
+            #self.fragmentmaxspeed = 200  # try out other factors !
+            self.dx = dx
+            self.dy = dy
             
         def update(self, seconds):
             self.time += seconds
@@ -319,11 +323,11 @@ w[0].set_colorkey((255,0,182))
 anim=0
 level=["hppppppppppppwpppppp",
        "ihpppppppppphipppppp",
-       "idhddgdddddhiddddddd",
-       "dddddgdddddddddddddd",
-       "dddddgdgwggddddddddd",
-       "dddddhdddddddggdvddd",
-       "ddddghdddddkdddddddd",
+       "idhddddddddhiddddddd",
+       "dddvdddddddddddddddd",
+       "ddddvddgwggddddddddd",
+       "dddddvdddddddggddddd",
+       "ddddgddddddddddddddd",
        "gggggggdgggdggdggggg"]
 legende={"h":h[anim],#towertop
          "p":p,#nothing
@@ -366,6 +370,8 @@ while mainloop:
     if millis > 500: # jede halbe sekunde neue animation
         millis=0
         z=0
+        x=0
+        y=0
         for zeile in level:
             for fleck in zeile:
                 if fleck == "d" and fleckanim[z] == 0:      
@@ -379,29 +385,40 @@ while mainloop:
                 if fleck == "v":
                     targetlist=[]
                     for target in monstergroup:
-                        pass # pythagoras distanz ausrechnen
+                        #pass # pythagoras distanz ausrechnen
                         #ziel wird gesucht reichweite getestet
                         #zufälliges ziel wird abgeschossen
-                
+                        distx=abs(target.pos[0]-x)
+                        disty=abs(target.pos[0]-y)
+                        dist=(distx**2+disty**2)**0.5
+                        if dist<DISCTHROWERRANGE:
+                            targetlist.append(target)
+                    if len(targetlist)>0:
+                        target=random.choice(targetlist)
+                        print("taget gefunden{}".format(target.pos) )
+                        #schuss
+                        DiscProjectile((x,y),target.pos[0]-x,target.pos[1]-y)
+                    else:
+                        print("No target found")
                 if fleckanim[z] > 5:
-                    fleckanim[z] = 0 
-                       
+                    fleckanim[z] = 0       
                 z+=1
-        
+                x+=50
+            y+=50
+            x=0
         x=0
         y=0
         z=0
         for zeile in level:
              for fleck in zeile:
-                legende={"h":h[anim],
-                   "p":p,
-                   "i":i[fleckanim[z]],
-                   "g":g[fleckanim[z]],
-                   "d":d[fleckanim[z]],
-                   "v":v[fleckanim[z]],
-                   "w":w[fleckanim[z]],
-                   "k":k[fleckanim[z]]
-                }
+                legende={"h":h[anim],#towertop
+                        "p":p,#nothing
+                        "i":i[anim],#dirt
+                        "g":g[anim],#lava
+                        "d":d[anim], #grass
+                        "v":v[anim], #discodiscgun
+                        "w":w[anim] #discogun
+                        }
                 z+=1
                 background.blit(legende[fleck],(x,y))
                 x+=50
