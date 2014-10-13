@@ -116,7 +116,7 @@ class Healthbar(pygame.sprite.Sprite):
         pygame.draw.rect(self.image, (1,1,1), (0,0,self.boss.rect.width,7),1)
         self.rect = self.image.get_rect()
         self.oldpercent = 0
-        self.bossnumber = self.boss.number # the unique number (name) of my boss is hosenlulu
+        self.bossnumber = self.boss.number # the unique number (name)
         
     def update(self, time):
         self.percent = self.boss.hitpoints / self.boss.hitpointsfull * 1.0
@@ -127,7 +127,7 @@ class Healthbar(pygame.sprite.Sprite):
         self.oldpercent = self.percent
         self.rect.centerx = self.boss.rect.centerx
         self.rect.centery = self.boss.rect.centery - self.boss.rect.height /2 - 10
-        #check if boss is still alive if not, then go and fart your butt off
+        #check if boss is still alive if not
         if self.boss.hitpoints<1:
             self.kill()
          #   self.kill() # kill the hitbar
@@ -141,7 +141,7 @@ class Monster(pygame.sprite.Sprite):
         monsters = {} # a dictionary of all monsters
         number = 0
   
-        def __init__(self, level, startpos=screen.get_rect().center, hitpointsfull=200):
+        def __init__(self, level, startpos=screen.get_rect().center, hitpointsfull=600):
   
       
             pygame.sprite.Sprite.__init__(self, self.groups ) #call parent class. NEVER FORGET !
@@ -323,9 +323,9 @@ w[0].set_colorkey((255,0,182))
 anim=0
 level=["hppppppppppppwpppppp",
        "ihpppppppppphipppppp",
-       "idhddddddddhiddddddd",
-       "dddvdddddddddddddddd",
-       "ddddvddgwggddddddddd",
+       "iddddddddddhiddddddd",
+       "dddddvdddddddddddddd",
+       "ddddvvdgwggddddddddd",
        "dddddvdddddddggddddd",
        "ddddgddddddddddddddd",
        "gggggggdgggdggdggggg"]
@@ -355,7 +355,7 @@ for zeile in level:
 
 
 
-spawnrate=0.01
+spawnrate=0.03
 Monster(level)
 millis = 0
 while mainloop:
@@ -444,9 +444,9 @@ while mainloop:
     pygame.display.flip()          # flip the screen like in a flipbook
     #sprite collide_________________________________________________________
     for mymonster in monstergroup:
-         crashgroup = pygame.sprite.spritecollide(mymonster, projectilegroup, False)  # true würde dic löscen
+         crashgroup = pygame.sprite.spritecollide(mymonster, projectilegroup, False)  # true würde disc löschen
          for myprojectile in crashgroup:
-               mymonster.hitpoints-=1 # test for collision with bullet
+               mymonster.hitpoints-=0.25 # test for collision with bullet
                                                 
                         
     #allgroup.clear(screen, background)
