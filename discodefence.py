@@ -24,7 +24,7 @@ mainloop = True
 FPS = 30 # desired framerate in frames per second. try out other values !
 playtime = 0.0
 #p=nothing,h=high block,i=wall,d=walkable platform,g=hazard
-FORCE_OF_GRAVITY=0.1
+FORCE_OF_GRAVITY=3
 ACTORSPEEDMAX=20
 ACTORSPEEDMIN=10
 DISCTHROWERRANGE=150
@@ -83,7 +83,7 @@ class DiscProjectile(pygame.sprite.Sprite):
             self.pos[1] = pos[1]
             self.image = DiscProjectile.image
             self.image.set_colorkey((255,0,182)) # black transparent
-            #äpygame.draw.circle(self.image, (random.randint(1,255),0,0), (5,5), 
+            #pygame.draw.circle(self.image, (random.randint(1,255),0,0), (5,5), 
                                             #random.randint(2,5))
             self.image = self.image.convert_alpha()
             self.rect = self.image.get_rect()
@@ -100,8 +100,8 @@ class DiscProjectile(pygame.sprite.Sprite):
                 self.kill() 
             self.pos[0] += self.dx * seconds
             self.pos[1] += self.dy * seconds
-            if Fragment.gravity:
-                self.dy += FORCE_OF_GRAVITY # gravity suck fragments down
+            #if Fragment.gravity:
+             #   self.dy += FORCE_OF_GRAVITY # gravity suck fragments down
             self.rect.centerx = round(self.pos[0],0)
             self.rect.centery = round(self.pos[1],0)
             
@@ -322,10 +322,10 @@ w[5].set_colorkey((255,0,182))
 w[0].set_colorkey((255,0,182))
 anim=0
 level=["hppppppppppppwpppppp",
-       "ihpppppppppphipppppp",
-       "iddddddddddhiddddddd",
+       "ihpppppppppihipppppp",
+       "iddddddddddhivdddddd",
        "dddddvdddddddddddddd",
-       "ddddvvdgwggddddddddd",
+       "ddddvvdgwggddvkddddd",
        "dddddvdddddddggddddd",
        "ddddgddddddddddddddd",
        "gggggggdgggdggdggggg"]
@@ -355,7 +355,7 @@ for zeile in level:
 
 
 
-spawnrate=0.03
+spawnrate=0.02
 Monster(level)
 millis = 0
 while mainloop:
@@ -397,7 +397,7 @@ while mainloop:
                         target=random.choice(targetlist)
                         print("taget gefunden{}".format(target.pos) )
                         #schuss
-                        DiscProjectile((x,y),target.pos[0]-x,target.pos[1]-y)
+                        DiscProjectile((x,y),DISCMAXSPEED*(target.pos[0]-x)/dist,DISCMAXSPEED*(target.pos[1]-y)/dist)
                     else:
                         print("No target found")
                 if fleckanim[z] > 5:
@@ -417,7 +417,8 @@ while mainloop:
                         "g":g[anim],#lava
                         "d":d[anim], #grass
                         "v":v[anim], #discodiscgun
-                        "w":w[anim] #discogun
+                        "w":w[anim], #discogun
+                        "k":k[anim]  #konfetti
                         }
                 z+=1
                 background.blit(legende[fleck],(x,y))
@@ -439,14 +440,14 @@ while mainloop:
             if event.key == pygame.K_ESCAPE:
                 mainloop = False # user pressed ESC
             if event.key==pygame.K_F1:
-                DiscProjectile()
+                DiscProjectile(pos=(random.randint(640,1024),random.randint(100,300)))
     pygame.display.set_caption("Frame rate: %.2f frames per second. Playtime: %.2f seconds" % (clock.get_fps(),playtime))
     pygame.display.flip()          # flip the screen like in a flipbook
     #sprite collide_________________________________________________________
     for mymonster in monstergroup:
          crashgroup = pygame.sprite.spritecollide(mymonster, projectilegroup, False)  # true würde disc löschen
          for myprojectile in crashgroup:
-               mymonster.hitpoints-=0.25 # test for collision with bullet
+               mymonster.hitpoints-=0.10 # test for collision with bullet
                                                 
                         
     #allgroup.clear(screen, background)
