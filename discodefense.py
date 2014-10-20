@@ -51,8 +51,8 @@ class Fragment(pygame.sprite.Sprite):
             self.pos[1] = pos[1]
             self.image = pygame.Surface((10,10))
             self.image.set_colorkey((0,0,0)) # black transparent
-            pygame.draw.circle(self.image, (random.randint(1,255),0,0), (5,5), 
-                                            random.randint(2,5))
+            pygame.draw.circle(self.image, (random.randint(20,230),random.randint(20,230),random.randint(20,230)), (5,5), 
+                                            random.randint(3,10))
             self.image = self.image.convert_alpha()
             self.rect = self.image.get_rect()
             self.rect.center = self.pos #if you forget this line the sprite sit in the topleft corner
@@ -204,7 +204,7 @@ class Monster(pygame.sprite.Sprite):
             to do the 'real' killing"""
             #cry.play()
             #print Bird.birds, "..."
-            for _ in range(random.randint(3,15)):
+            for _ in range(random.randint(7,20)):
                 Fragment(self.pos)
             Monster.monsters[self.number] = None # kill Bird in sprite dictionary
             
