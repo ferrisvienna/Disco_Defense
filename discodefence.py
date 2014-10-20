@@ -161,7 +161,7 @@ class Monster(pygame.sprite.Sprite):
             self.hitpoints = float(hitpointsfull) # actual hitpoints
             self.rect = self.image.get_rect()
             self.radius = max(self.rect.width, self.rect.height) / 2.0
-            self.dx= random.random()*40+20
+            self.dx= random.random()*10+20
             self.dy= random.randint(-70,70)
             self.rect.centerx = round(self.pos[0],0)
             self.rect.centery = round(self.pos[1],0) #kackabraun
@@ -237,7 +237,7 @@ class Monster(pygame.sprite.Sprite):
             if self.getChar()=="h":
                 self.nomove = True
             self.dy=random.randint(-10, 10)
-            self.dx= 5#random.randint(10,10)
+            self.dx= 25#random.randint(10,10)
             if self.nomove:
                 self.dx = 0
             self.pos[0] += self.dx * seconds
@@ -440,14 +440,15 @@ while mainloop:
             if event.key == pygame.K_ESCAPE:
                 mainloop = False # user pressed ESC
             if event.key==pygame.K_F1:
-                DiscProjectile(pos=(random.randint(640,1024),random.randint(100,300)))
+                for px in range (0,240):
+                    DiscProjectile(pos=(random.randint(540,1024),random.randint(100,400)))
     pygame.display.set_caption("Frame rate: %.2f frames per second. Playtime: %.2f seconds" % (clock.get_fps(),playtime))
     pygame.display.flip()          # flip the screen like in a flipbook
     #sprite collide_________________________________________________________
     for mymonster in monstergroup:
          crashgroup = pygame.sprite.spritecollide(mymonster, projectilegroup, False)  # true würde disc löschen
          for myprojectile in crashgroup:
-               mymonster.hitpoints-=0.10 # test for collision with bullet
+               mymonster.hitpoints-=0.50 # test for collision with bullet
                                                 
                         
     #allgroup.clear(screen, background)
