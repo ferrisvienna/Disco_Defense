@@ -308,7 +308,7 @@ h[4].set_colorkey((255,0,182))
 h[5].set_colorkey((255,0,182))
 p= pygame.image.load("p.png")
 p.set_colorkey((255,0,182))
-e= pygame.image.load("p.png")
+e= pygame.image.load("protect.png")
 p.set_colorkey((255,0,182))
 i= [pygame.image.load("i0.png"),pygame.image.load("i1.png"),pygame.image.load("i2.png"),pygame.image.load("i3.png"),    pygame.image.load("i4.png"),pygame.image.load("i5.png")]
 i[1].set_colorkey((255,0,182))
