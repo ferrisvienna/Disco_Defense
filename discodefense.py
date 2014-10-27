@@ -442,6 +442,13 @@ while mainloop:
     screen.blit(background, (0,0))    
     allgroup.draw(screen)
     
+    
+    #ferris laserkanonenstrahl hier reincoden
+    pygame.draw.line(screen,(random.randint(0,255),random.randint(0,255),random.randint(0,255)),(675,25),(random.randint(0,200),random.randint(0,400)),random.randint(5,15))
+    
+    
+    # ---------------
+    
     pygame.display.set_caption("lives:{}".format(Game.lives))
     # ----- event handler -----
     for event in pygame.event.get():
