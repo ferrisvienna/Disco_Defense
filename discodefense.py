@@ -445,6 +445,12 @@ while mainloop:
     
     #ferris laserkanonenstrahl hier reincoden
     pygame.draw.line(screen,(random.randint(0,255),random.randint(0,255),random.randint(0,255)),(675,25),(random.randint(0,200),random.randint(0,400)),random.randint(5,15))
+    #pygame.draw.line(screen,(random.randint(0,255),random.randint(0,255),random.randint(0,255)),(475,225),(random.randint(0,200),random.randint(0,400)),random.randint(5,15))
+    #pygame.draw.line(screen,(random.randint(0,255),random.randint(0,255),random.randint(0,255)),(random.randint(0,1000),random.randint(0,500)),(random.randint(0,1000),random.randint(0,400)),random.randint(5,15))
+    #pygame.draw.line(screen,(random.randint(0,255),random.randint(0,255),random.randint(0,255)),(random.randint(0,1000),random.randint(0,500)),(random.randint(0,1000),random.randint(0,400)),random.randint(5,15))
+    #pygame.draw.line(screen,(random.randint(0,255),random.randint(0,255),random.randint(0,255)),(random.randint(0,1000),random.randint(0,500)),(random.randint(0,1000),random.randint(0,400)),random.randint(5,15))
+    #pygame.draw.line(screen,(random.randint(0,255),random.randint(0,255),random.randint(0,255)),(random.randint(0,1000),random.randint(0,500)),(random.randint(0,1000),random.randint(0,400)),random.randint(5,15))
+    #pygame.draw.line(screen,(random.randint(0,255),random.randint(0,255),random.randint(0,255)),(random.randint(0,1000),random.randint(0,500)),(random.randint(0,1000),random.randint(0,400)),random.randint(5,15))
     
     
     # ---------------
