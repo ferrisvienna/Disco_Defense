@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#004BB1#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """Open source game by Ferris(FerrisofVienna) Bartak
 and Paolo "Broccolimaniac" Perfahl
@@ -13,7 +13,7 @@ pygame.mixer.pre_init(44100, -16, 2, 2048) # setup mixer to avoid sound lag
 pygame.init()
 screen=pygame.display.set_mode((1024,400))
 background = pygame.Surface(screen.get_size())
-background.fill((255,255,255))     # fill the background white (red,green,blue)
+background.fill((1,75,176))     # fill the background white (red,green,blue)
 background = background.convert()  # faster blitting
 ballsurface = pygame.Surface((50,50))     # create a rectangular surface for the ball
 #------- blit the surfaces on the screen to make them visible
