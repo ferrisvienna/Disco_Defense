@@ -1,7 +1,9 @@
 #004BB1#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""Open source game by Ferris(FerrisofVienna) Bartak
+"""Disco Defense
+Open source game by Ferris(FerrisofVienna) Bartak
 and Paolo "Broccolimaniac" Perfahl
+using python3 and pygame
 """
 
 #the next line is only needed for python2.x and not necessary for python3.x
@@ -9,37 +11,122 @@ from __future__ import print_function, division
 import random
 import pygame
 import time as t
-pygame.mixer.pre_init(44100, -16, 2, 2048) # setup mixer to avoid sound lag
-pygame.init()
-screen=pygame.display.set_mode((1024,400))
-background = pygame.Surface(screen.get_size())
-background.fill((1,75,176))     # fill the background white (red,green,blue)
-background = background.convert()  # faster blitting
-ballsurface = pygame.Surface((50,50))     # create a rectangular surface for the ball
-#------- blit the surfaces on the screen to make them visible
-screen.blit(background, (0,0))     # blit the background on the screen (overwriting all)
-#screen.blit(ballsurface, (ballx, bally))  # blit the topleft corner of ball surface at pos (ballx, bally)
-clock = pygame.time.Clock()
-mainloop = True
-FPS = 30 # desired framerate in frames per second. try out other values !
-playtime = 0.0
-#p=nothing,h=high block,i=wall,d=walkable platform,g=hazard
-FORCE_OF_GRAVITY=3
-ACTORSPEEDMAX=20
-ACTORSPEEDMIN=10
-DISCTHROWERRANGE=150
-DISCMAXSPEED=100
-
-
-playergroup = pygame.sprite.LayeredUpdates()
-bargroup = pygame.sprite.Group()
-stuffgroup = pygame.sprite.Group()
-fragmentgroup = pygame.sprite.Group()
-allgroup = pygame.sprite.LayeredUpdates()
-projectilegroup = pygame.sprite.Group()
 
 class Game(object):
-    lives=20
+    LIVES=20
+    FORCE_OF_GRAVITY=3
+    ACTORSPEEDMAX=20
+    ACTORSPEEDMIN=10
+    DISCTHROWERRANGE=150
+    DISCMAXSPEED=100
+    SPAWNRATE = 0.02
+
+    def __init__(self):
+
+        Monster.images.append(pygame.image.load("data/discodudel.png")) # 0
+        Monster.images[0].set_colorkey((255,0,182))
+        Monster.images.append(pygame.image.load("data/discodudel4.png")) # 1
+        Monster.images[1].set_colorkey((255,0,182))
+        Monster.images.append(pygame.image.load("data/discodudel.png")) # 2
+        Monster.images[2].set_colorkey((255,0,182))
+        Monster.images.append(pygame.image.load("data/discodudel2.png")) # 3
+        Monster.images[3].set_colorkey((255,0,182))
+        Monster.images.append(pygame.image.load("data/discodudel3.png")) # 4
+        Monster.images[4].set_colorkey((255,0,182))
+        Monster.images.append(pygame.image.load("data/discodudel2.png")) # 5
+        Monster.images[5].set_colorkey((255,0,182))
+        Monster.images[0].convert_alpha()
+        Monster.images[1].convert_alpha()
+        Monster.images[2].convert_alpha()
+        Monster.images[3].convert_alpha()
+        Monster.images[4].convert_alpha()
+        Monster.images[5].convert_alpha()
+
+        self.h= [pygame.image.load("data/h0.png"),
+                 pygame.image.load("data/h1.png"),
+                 pygame.image.load("data/h2.png"),
+                 pygame.image.load("data/h3.png"),
+                 pygame.image.load("data/h4.png"),
+                 pygame.image.load("data/h5.png")]
+        self.h[0].set_colorkey((255,0,182))
+        self.h[1].set_colorkey((255,0,182))
+        self.h[2].set_colorkey((255,0,182))
+        self.h[3].set_colorkey((255,0,182))
+        self.h[4].set_colorkey((255,0,182))
+        self.h[5].set_colorkey((255,0,182))
+        self.p= pygame.image.load("data/p.png")
+        self.p.set_colorkey((255,0,182))
+        self.e= pygame.image.load("data/protect.png")
+        self.p.set_colorkey((255,0,182))
+        self.i= [pygame.image.load("data/i0.png"),
+                 pygame.image.load("data/i1.png"),
+                 pygame.image.load("data/i2.png"),
+                 pygame.image.load("data/i3.png"),
+                 pygame.image.load("data/i4.png"),
+                 pygame.image.load("data/i5.png")]
+        self.i[1].set_colorkey((255,0,182))
+        self.i[2].set_colorkey((255,0,182))
+        self.i[3].set_colorkey((255,0,182))
+        self.i[4].set_colorkey((255,0,182))
+        self.i[5].set_colorkey((255,0,182))
+        self.i[0].set_colorkey((255,0,182))
+        self.d= [pygame.image.load("data/d0.png"),
+                 pygame.image.load("data/d1.png"),
+                 pygame.image.load("data/d2.png"),
+                 pygame.image.load("data/d3.png"),
+                 pygame.image.load("data/d4.png"),
+                 pygame.image.load("data/d5.png")]
+        self.g= [pygame.image.load("data/g0.png"),
+                 pygame.image.load("data/g1.png"),
+                 pygame.image.load("data/g2.png"),
+                 pygame.image.load("data/g3.png"),
+                 pygame.image.load("data/g4.png"),
+                 pygame.image.load("data/g5.png")]
+        self.v= [pygame.image.load("data/discodiscgunf.png"),
+                 pygame.image.load("data/discodiscgunl.png"),
+                 pygame.image.load("data/discodiscgunb.png"),
+                 pygame.image.load("data/discodiscgunr.png"),
+                 pygame.image.load("data/discodiscgunr.png"),
+                 pygame.image.load("data/discodiscgunr.png")]
+        self.k= [pygame.image.load("data/konfettif.png"),
+                 pygame.image.load("data/konfettir.png"),
+                 pygame.image.load("data/konfettib.png"),
+                 pygame.image.load("data/konfettil.png"),
+                 pygame.image.load("data/konfettil.png"),
+                 pygame.image.load("data/konfettil.png")]
+        self.w= [pygame.image.load("data/discogunf.png"),
+                 pygame.image.load("data/discogunr.png"),
+                 pygame.image.load("data/discogunb.png"),
+                 pygame.image.load("data/discogunl.png"),
+                 pygame.image.load("data/discogunl.png"),
+                 pygame.image.load("data/discogunl.png")]
+        self.w[1].set_colorkey((255,0,182))
+        self.w[2].set_colorkey((255,0,182))
+        self.w[3].set_colorkey((255,0,182))
+        self.w[4].set_colorkey((255,0,182))
+        self.w[5].set_colorkey((255,0,182))
+        self.w[0].set_colorkey((255,0,182))
+        self.anim=0
+        self.level=["hppppppppppppwppppppe",
+                    "ihpppppppppihippppppe",
+                    "idddvddddddhidvddddde",
+                    "dddddddddddddddddddde",
+                    "vddddddgdvddddkddddve",
+                    "dddddddddddddggddddde",
+                    "ddddvdddddddddvddddde",
+                    "gggggggdgggdggdggggge"]
+        anim = 0
+        self.legende={"h":self.h[anim],#towertop
+                      "p":self.p,#nothing
+                      "i":self.i[anim],#dirt
+                      "g":self.g[anim],#lava
+                      "d":self.d[anim], #grass
+                      "v":self.v[anim], #discodiscgun
+                      "w":self.w[anim], #discogun
+                      "k":self.k[anim], #konfettigun
+                      "e":self.e #end of world
+                      }
+
 
 class Fragment(pygame.sprite.Sprite):
         """a fragment of an exploding Bird"""
@@ -51,7 +138,7 @@ class Fragment(pygame.sprite.Sprite):
             self.pos[1] = pos[1]
             self.image = pygame.Surface((10,10))
             self.image.set_colorkey((0,0,0)) # black transparent
-            pygame.draw.circle(self.image, (random.randint(20,230),random.randint(20,230),random.randint(20,230)), (5,5), 
+            pygame.draw.circle(self.image, (random.randint(20,230),random.randint(20,230),random.randint(20,230)), (5,5),
                                             random.randint(3,10))
             self.image = self.image.convert_alpha()
             self.rect = self.image.get_rect()
@@ -61,33 +148,33 @@ class Fragment(pygame.sprite.Sprite):
             self.fragmentmaxspeed = 200  # try out other factors !
             self.dx = random.randint(-self.fragmentmaxspeed,self.fragmentmaxspeed)
             self.dy = random.randint(-self.fragmentmaxspeed,self.fragmentmaxspeed)
-            
+
         def update(self, seconds):
             self.time += seconds
             if self.time > self.lifetime:
-                self.kill() 
+                self.kill()
             self.pos[0] += self.dx * seconds
             self.pos[1] += self.dy * seconds
             if Fragment.gravity:
                 self.dy += FORCE_OF_GRAVITY # gravity suck fragments down
             self.rect.centerx = round(self.pos[0],0)
             self.rect.centery = round(self.pos[1],0)
-            
-            
+
+
 class DiscProjectile(pygame.sprite.Sprite):
         """a projectile of a Disc gun"""
         gravity = False # fragments fall down ?
-        image=pygame.image.load("disc.png")
+        image=pygame.image.load("data/disc.png")
         def __init__(self, pos=(random.randint(640,1024),random.randint(100,300)),
-                     dx= random.randint(-DISCMAXSPEED,DISCMAXSPEED),
-                     dy=random.randint(-DISCMAXSPEED,DISCMAXSPEED)):
+                     dx=random.randint(-Game.DISCMAXSPEED,Game.DISCMAXSPEED),
+                     dy=random.randint(-Game.DISCMAXSPEED,Game.DISCMAXSPEED)):
             pygame.sprite.Sprite.__init__(self, self.groups)
             self.pos = [0.0,0.0]
             self.pos[0] = pos[0]
             self.pos[1] = pos[1]
             self.image = DiscProjectile.image
             self.image.set_colorkey((255,0,182)) # black transparent
-            #pygame.draw.circle(self.image, (random.randint(1,255),0,0), (5,5), 
+            #pygame.draw.circle(self.image, (random.randint(1,255),0,0), (5,5),
                                             #random.randint(2,5))
             self.image = self.image.convert_alpha()
             self.rect = self.image.get_rect()
@@ -97,19 +184,19 @@ class DiscProjectile(pygame.sprite.Sprite):
             #self.fragmentmaxspeed = 200  # try out other factors !
             self.dx = dx
             self.dy = dy
-            
+
         def update(self, seconds):
             self.time += seconds
             if self.time > self.lifetime:
-                self.kill() 
+                self.kill()
             self.pos[0] += self.dx * seconds
             self.pos[1] += self.dy * seconds
             #if Fragment.gravity:
              #   self.dy += FORCE_OF_GRAVITY # gravity suck fragments down
             self.rect.centerx = round(self.pos[0],0)
             self.rect.centery = round(self.pos[1],0)
-            
-            
+
+
 class Healthbar(pygame.sprite.Sprite):
     """shows a bar with the hitpoints of a Bird sprite"""
     def __init__(self, boss):
@@ -121,7 +208,7 @@ class Healthbar(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.oldpercent = 0
         self.bossnumber = self.boss.number # the unique number (name)
-        
+
     def update(self, time):
         self.percent = self.boss.hitpoints / self.boss.hitpointsfull * 1.0
         if self.percent != self.oldpercent:
@@ -135,19 +222,19 @@ class Healthbar(pygame.sprite.Sprite):
         if self.boss.hitpoints<1:
             self.kill()
          #   self.kill() # kill the hitbar
-            
-            
-            
+
+
+
 class Monster(pygame.sprite.Sprite):
         """Generic Monster"""
         images=[]  # list of all images
         # not necessary:
         monsters = {} # a dictionary of all monsters
         number = 0
-  
-        def __init__(self, level, startpos=screen.get_rect().center, hitpointsfull=600):
-  
-      
+
+        def __init__(self, level, startpos=(0,200), hitpointsfull=600):
+
+
             pygame.sprite.Sprite.__init__(self, self.groups ) #call parent class. NEVER FORGET !
             self.z = 0 # animationsnummer
             self.duration = 0.0 # how long was the current animation visible in seconds
@@ -176,15 +263,15 @@ class Monster(pygame.sprite.Sprite):
             #--- not necessary:
             self.number = Monster.number # get my personal Birdnumber
             Monster.number+= 1           # increase the number for next Bird
-            Monster.monsters[self.number] = self # 
+            Monster.monsters[self.number] = self #
             Healthbar(self)
-            
-            
+
+
         #def newspeed(self):
             # new birdspeed, but not 0
             #speedrandom = random.choice([-1,1]) # flip a coin
-            #self.dx = random.random() * ACTORSPEEDMAX * speedrandom + speedrandom 
-            #self.dy = random.random() * ACTORSPEEDMAX * speedrandom + speedrandom 
+            #self.dx = random.random() * ACTORSPEEDMAX * speedrandom + speedrandom
+            #self.dy = random.random() * ACTORSPEEDMAX * speedrandom + speedrandom
         def getChar(self):
             #Tile = 50*50
             x=int(self.pos[0]/50)
@@ -193,24 +280,24 @@ class Monster(pygame.sprite.Sprite):
                 char=self.level[y][x]
             except:
                 char="?"
-            return char        
-        
-        
-        
+            return char
+
+
+
         def kill(self):
             """because i want to do some special effects (sound, dictionary etc.)
             before killing the Bird sprite i have to write my own kill(self)
-            function and finally call pygame.sprite.Sprite.kill(self) 
+            function and finally call pygame.sprite.Sprite.kill(self)
             to do the 'real' killing"""
             #cry.play()
             #print Bird.birds, "..."
             for _ in range(random.randint(7,20)):
                 Fragment(self.pos)
             Monster.monsters[self.number] = None # kill Bird in sprite dictionary
-            
-            pygame.sprite.Sprite.kill(self) # kill the actual Bird 
 
-        
+            pygame.sprite.Sprite.kill(self) # kill the actual Bird
+
+
         def update(self, seconds):
             # friction make birds slower
             #if abs(self.dx) > ACTORSPEEDMIN and abs(self.dy) > BIRDSPEEDMIN:10.000
@@ -232,7 +319,7 @@ class Monster(pygame.sprite.Sprite):
                 if self.z >= len(Monster.images):
                     self.z = 0
                 self.image=Monster.images[self.z]
-            
+
             #-------
             if self.getChar()=="g":
                 self.hitpoints-=1
@@ -274,211 +361,180 @@ class Monster(pygame.sprite.Sprite):
             if self.hitpoints <= 0:
                 self.kill()
 
-monstergroup=pygame.sprite.Group()
-allgroup=pygame.sprite.LayeredUpdates()
-bargroup = pygame.sprite.Group()
-fragmentgroup = pygame.sprite.Group()
-
-DiscProjectile.groups = allgroup, projectilegroup
-Monster.groups =  allgroup, monstergroup
-Fragment.groups=allgroup, fragmentgroup
-Healthbar.groups=allgroup, bargroup
-
-Monster.images.append(pygame.image.load("discodudel.png")) # 0
-Monster.images[0].set_colorkey((255,0,182))
-Monster.images.append(pygame.image.load("discodudel4.png")) # 1
-Monster.images[1].set_colorkey((255,0,182))
-Monster.images.append(pygame.image.load("discodudel.png")) # 2
-Monster.images[2].set_colorkey((255,0,182))
-Monster.images.append(pygame.image.load("discodudel2.png")) # 3
-Monster.images[3].set_colorkey((255,0,182))
-Monster.images.append(pygame.image.load("discodudel3.png")) # 4
-Monster.images[4].set_colorkey((255,0,182))
-Monster.images.append(pygame.image.load("discodudel2.png")) # 5
-Monster.images[5].set_colorkey((255,0,182))
-Monster.images[0].convert_alpha() 
-#paolo=Monster(level) 
-
-h= [pygame.image.load("h0.png"),pygame.image.load("h1.png"),pygame.image.load("h2.png"),pygame.image.load("h3.png"),    pygame.image.load("h4.png"),pygame.image.load("h5.png")]
-h[0].set_colorkey((255,0,182))
-h[1].set_colorkey((255,0,182))
-h[2].set_colorkey((255,0,182))
-h[3].set_colorkey((255,0,182))
-h[4].set_colorkey((255,0,182))
-h[5].set_colorkey((255,0,182))
-p= pygame.image.load("p.png")
-p.set_colorkey((255,0,182))
-e= pygame.image.load("protect.png")
-p.set_colorkey((255,0,182))
-i= [pygame.image.load("i0.png"),pygame.image.load("i1.png"),pygame.image.load("i2.png"),pygame.image.load("i3.png"),    pygame.image.load("i4.png"),pygame.image.load("i5.png")]
-i[1].set_colorkey((255,0,182))
-i[2].set_colorkey((255,0,182))
-i[3].set_colorkey((255,0,182))
-i[4].set_colorkey((255,0,182))
-i[5].set_colorkey((255,0,182))
-i[0].set_colorkey((255,0,182))
-d= [pygame.image.load("d0.png"),pygame.image.load("d1.png"),pygame.image.load("d2.png"),pygame.image.load("d3.png"),    pygame.image.load("d4.png"),pygame.image.load("d5.png")]
-g= [pygame.image.load("g0.png"),pygame.image.load("g1.png"),pygame.image.load("g2.png"),pygame.image.load("g3.png"),    pygame.image.load("g4.png"),pygame.image.load("g5.png")]
-v= [pygame.image.load("discodiscgunf.png"),pygame.image.load("discodiscgunl.png"),pygame.image.load("discodiscgunb.png"),pygame.image.load("discodiscgunr.png"),pygame.image.load("discodiscgunr.png"),pygame.image.load("discodiscgunr.png")]
-k= [pygame.image.load("konfettif.png"),pygame.image.load("konfettir.png"),pygame.image.load("konfettib.png"),pygame.image.load("konfettil.png"),    pygame.image.load("konfettil.png"),pygame.image.load("konfettil.png")]
-w= [pygame.image.load("discogunf.png"),pygame.image.load("discogunr.png"),pygame.image.load("discogunb.png"),pygame.image.load("discogunl.png"),    pygame.image.load("discogunl.png"),pygame.image.load("discogunl.png")]
-w[1].set_colorkey((255,0,182))
-w[2].set_colorkey((255,0,182))
-w[3].set_colorkey((255,0,182))
-w[4].set_colorkey((255,0,182))
-w[5].set_colorkey((255,0,182))
-w[0].set_colorkey((255,0,182))
-anim=0
-level=["hppppppppppppwppppppe",
-       "ihpppppppppihippppppe",
-       "idddvddddddhidvddddde",
-       "dddddddddddddddddddde",
-       "vddddddgdvddddkddddve",
-       "dddddddddddddggddddde",
-       "ddddvdddddddddvddddde",
-       "gggggggdgggdggdggggge"]
-legende={"h":h[anim],#towertop
-         "p":p,#nothing
-         "i":i[anim],#dirt
-         "g":g[anim],#lava
-         "d":d[anim], #grass
-         "v":v[anim], #discodiscgun
-         "w":w[anim], #discogun
-         "k":k[anim], #konfettigun
-         "e":e #end of world
-         }
-x=0
-y=0
-fleckanim=[]
-for zeile in level:
-     for fleck in zeile:
-           fleckanim.append(0)
-           background.blit(legende[fleck],(x,y))
-           x+=50
-     y+=50
-     x=0
 
 
+class Viewer(object):
 
 
+     def __init__(self, width=1024, height=400, fps=30):
+        """Initialize pygame, window, background, font,...
+           default arguments
+        """
 
+        pygame.mixer.pre_init(44100, -16, 2, 2048) # setup mixer to avoid sound lag
+        pygame.init()
+        pygame.display.set_caption("Press ESC to quit")
+        self.width = width
+        self.height = height
+        self.screen = pygame.display.set_mode((self.width, self.height), pygame.DOUBLEBUF)
+        self.background = pygame.Surface(self.screen.get_size()).convert()
+        #self.background.fill((255,255,255)) # fill background white
+        self.background.fill((1,75,176))     # fill the background white (red,green,blue)
+        self.clock = pygame.time.Clock()
+        self.fps = fps
+        self.playtime = 0.0
+        self.font = pygame.font.SysFont('mono', 24, bold=True)
 
+        # sprite groups
 
-spawnrate=0.02
-Monster(level)
-millis = 0
-lives=20
-while mainloop:
-    milliseconds = clock.tick(FPS) # do not go faster than this frame rate and that
-    seconds=milliseconds /1000.0
-    playtime += milliseconds / 1000.0
-    millis += milliseconds
-    
-    if random.random()<spawnrate:
-        Monster(level)
-    
-    if millis > 500: # jede halbe sekunde neue animation
-        millis=0
-        z=0
+        self.playergroup = pygame.sprite.LayeredUpdates()
+        self.bargroup = pygame.sprite.Group()
+        self.stuffgroup = pygame.sprite.Group()
+        self.fragmentgroup = pygame.sprite.Group()
+        self.allgroup = pygame.sprite.LayeredUpdates()
+        self.projectilegroup = pygame.sprite.Group()
+
+        self.monstergroup=pygame.sprite.Group()
+        self.allgroup=pygame.sprite.LayeredUpdates()
+        self.bargroup = pygame.sprite.Group()
+        self.fragmentgroup = pygame.sprite.Group()
+
+        DiscProjectile.groups = self.allgroup, self.projectilegroup
+        Monster.groups =  self.allgroup, self.monstergroup
+        Fragment.groups = self.allgroup, self.fragmentgroup
+        Healthbar.groups = self.allgroup, self.bargroup
+
+        self.game = Game()
+
+     def paint(self):
+        # paint the level of self.game
+
         x=0
         y=0
-        for zeile in level:
-            for fleck in zeile:
-                if fleck == "d" and fleckanim[z] == 0:      
-                    if random.random() < 0.005:
-                        fleckanim[z] += 1
-                elif fleck == "g" and fleckanim[z] == 0:
-                    if random.random() < 0.5:
-                        fleckanim[z] += 1
-                else:
-                    fleckanim[z] += 1 # normaler fleck
-                if fleck == "v":
-                    targetlist=[]
-                    for target in monstergroup:
-                        #pass # pythagoras distanz ausrechnen
-                        #ziel wird gesucht reichweite getestet
-                        #zufälliges ziel wird abgeschossen
-                        distx=abs(target.pos[0]-x)
-                        disty=abs(target.pos[1]-y)
-                        dist=(distx**2+disty**2)**0.5
-                        if dist<DISCTHROWERRANGE:
-                            targetlist.append(target)
-                    if len(targetlist)>0:
-                        target=random.choice(targetlist)
-                        print("taget gefunden{}".format(target.pos) )
-                        #schuss
-                        DiscProjectile((x,y),DISCMAXSPEED*(target.pos[0]-x)/dist,DISCMAXSPEED*(target.pos[1]-y)/dist)
-                    else:
-                        print("No target found")
-                if fleckanim[z] > 5:
-                    fleckanim[z] = 0       
-                z+=1
-                x+=50
-            y+=50
-            x=0
-        x=0
-        y=0
-        z=0
-        for zeile in level:
-             for fleck in zeile:
-                legende={"h":h[anim],#towertop
-                        "p":p,#nothing
-                        "i":i[anim],#dirt
-                        "g":g[anim],#lava
-                        "d":d[anim], #grass
-                        "v":v[anim], #discodiscgun
-                        "w":w[anim], #discogun
-                        "k":k[anim],  #konfetti
-                        "e":e
-                        }
-                z+=1
-                background.blit(legende[fleck],(x,y))
-                x+=50
-             y+=50
-             x=0
-             
+        self.game.fleckanim=[]
+        for zeile in self.game.level:
+          for fleck in zeile:
+               self.game.fleckanim.append(0)
+               self.background.blit(self.game.legende[fleck],(x,y))
+               x+=50
+          y+=50
+          x=0
 
-    # blitten
-    screen.blit(background, (0,0))    
-    allgroup.draw(screen)
-    
-    
-    #ferris laserkanonenstrahl hier reincoden
-    pygame.draw.line(screen,(random.randint(0,255),random.randint(0,255),random.randint(0,255)),(675,25),(random.randint(0,200),random.randint(0,400)),random.randint(5,15))
-    #pygame.draw.line(screen,(random.randint(0,255),random.randint(0,255),random.randint(0,255)),(475,225),(random.randint(0,200),random.randint(0,400)),random.randint(5,15))
-    #pygame.draw.line(screen,(random.randint(0,255),random.randint(0,255),random.randint(0,255)),(random.randint(0,1000),random.randint(0,500)),(random.randint(0,1000),random.randint(0,400)),random.randint(5,15))
-    #pygame.draw.line(screen,(random.randint(0,255),random.randint(0,255),random.randint(0,255)),(random.randint(0,1000),random.randint(0,500)),(random.randint(0,1000),random.randint(0,400)),random.randint(5,15))
-    #pygame.draw.line(screen,(random.randint(0,255),random.randint(0,255),random.randint(0,255)),(random.randint(0,1000),random.randint(0,500)),(random.randint(0,1000),random.randint(0,400)),random.randint(5,15))
-    #pygame.draw.line(screen,(random.randint(0,255),random.randint(0,255),random.randint(0,255)),(random.randint(0,1000),random.randint(0,500)),(random.randint(0,1000),random.randint(0,400)),random.randint(5,15))
-    #pygame.draw.line(screen,(random.randint(0,255),random.randint(0,255),random.randint(0,255)),(random.randint(0,1000),random.randint(0,500)),(random.randint(0,1000),random.randint(0,400)),random.randint(5,15))
-    
-    
-    # ---------------
-    
-    pygame.display.set_caption("lives:{}".format(Game.lives))
-    # ----- event handler -----
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            mainloop = False # pygame windows closed by user
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                mainloop = False # user pressed ESC
-            if event.key==pygame.K_F1:
-                for px in range (0,240):
-                    DiscProjectile(pos=(random.randint(540,1024),random.randint(100,400)))
-    #pygame.display.set_caption("Frame rate: %.2f frames per second. Playtime: %.2f seconds" % (clock.get_fps(),playtime),#("lives:{}".format(Game.lives)))
-    pygame.display.flip()          # flip the screen like in a flipbook
-    #sprite collide_________________________________________________________
-    for mymonster in monstergroup:
-         crashgroup = pygame.sprite.spritecollide(mymonster, projectilegroup, False)  # true würde dich löschen
-         for myprojectile in crashgroup:
-               mymonster.hitpoints-=0.50 # test for collision with bullet
-                                                
-                        
-    #allgroup.clear(screen, background)
-    allgroup.update(seconds)
-    allgroup.draw(screen)
-    
-    
-    
-print( "this 'game' was played for %.2f seconds" % playtime)
+     def run(self):
+        """The mainloop
+        """
+
+
+        self.paint()
+        running = True
+        millis = 0
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        running = False
+                    # ------CHEAT KEY----------
+                    if event.key==pygame.K_F1:
+                       for px in range (0,240):
+                           DiscProjectile(pos=(random.randint(540,1024),random.randint(100,400)))
+
+            milliseconds = self.clock.tick(self.fps)
+            millis += milliseconds
+            seconds=milliseconds /1000.0
+            self.playtime += milliseconds / 1000.0
+            self.playtime += milliseconds / 1000.0
+            self.draw_text("FPS: {:6.3}{}PLAYTIME: {:6.3} SECONDS".format(
+                           self.clock.get_fps(), " "*5, self.playtime))
+
+            pygame.display.flip()
+            self.screen.blit(self.background, (0, 0)) # alles löschen
+            # level aufbauen
+
+            # monster spawn
+            if random.random()<self.game.SPAWNRATE:
+               Monster(self.game.level)
+
+            # spritecollide
+            
+            if millis > 500: # jede halbe sekunde neue animation
+                millis=0
+                z=0
+                x=0
+                y=0
+                for zeile in self.game.level:
+                    for fleck in zeile:
+                        if fleck == "d" and self.game.fleckanim[z] == 0:      
+                            if random.random() < 0.005:
+                                self.game.fleckanim[z] += 1
+                        elif fleck == "g" and self.game.fleckanim[z] == 0:
+                            if random.random() < 0.5:
+                                self.game.fleckanim[z] += 1
+                        else:
+                            self.game.fleckanim[z] += 1 # normaler fleck
+                        if fleck == "v":
+                            targetlist=[]
+                            for target in self.monstergroup:
+                                #pass # pythagoras distanz ausrechnen
+                                #ziel wird gesucht reichweite getestet
+                                #zufälliges ziel wird abgeschossen
+                                distx=abs(target.pos[0]-x)
+                                disty=abs(target.pos[1]-y)
+                                dist=(distx**2+disty**2)**0.5
+                                if dist<self.game.DISCTHROWERRANGE:
+                                    targetlist.append(target)
+                            if len(targetlist)>0:
+                                target=random.choice(targetlist)
+                                print("taget gefunden{}".format(target.pos) )
+                                #schuss
+                                DiscProjectile((x,y),
+                                   self.game.DISCMAXSPEED*((target.pos[0]-x)/dist)**2,
+                                   self.game.DISCMAXSPEED*((target.pos[1]-y)/dist)**2)
+                            else:
+                                print("No target found")
+                        if self.game.fleckanim[z] > 5:
+                            self.game.fleckanim[z] = 0       
+                        z+=1
+                        x+=50
+                    y+=50
+                    x=0
+                 
+                 
+            # laser
+            #ferris laserkanonenstrahl hier reincoden
+            pygame.draw.line(self.screen,(random.randint(0,255),random.randint(0,255),
+                             random.randint(0,255)),(675,25),(random.randint(0,200),
+                             random.randint(0,400)),random.randint(5,15))
+         
+            #allgroup.clear(screen, background)
+            self.allgroup.update(seconds)
+            self.allgroup.draw(self.screen)
+
+
+
+        pygame.quit()
+
+
+     def draw_text(self, text):
+        """Center text in window
+        """
+        fw, fh = self.font.size(text)
+        surface = self.font.render(text, True, (0, 0, 0))
+        self.screen.blit(surface, (50,150))
+
+
+
+
+
+## code on module level
+if __name__ == '__main__':
+
+    # call with width of window and fps
+    Viewer().run()
+
+
+
+
+
+
