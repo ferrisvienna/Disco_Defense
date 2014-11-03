@@ -166,7 +166,7 @@ class DiscProjectile(pygame.sprite.Sprite):
         gravity = False # fragments fall down ?
         image=pygame.image.load("data/disc.png")
         def __init__(self, pos=(random.randint(640,1024),random.randint(100,300)),
-                     dx= random.randint(-Game.DISCMAXSPEED,Game.DISCMAXSPEED),
+                     dx=random.randint(-Game.DISCMAXSPEED,Game.DISCMAXSPEED),
                      dy=random.randint(-Game.DISCMAXSPEED,Game.DISCMAXSPEED)):
             pygame.sprite.Sprite.__init__(self, self.groups)
             self.pos = [0.0,0.0]
@@ -488,7 +488,9 @@ class Viewer(object):
                                 target=random.choice(targetlist)
                                 print("taget gefunden{}".format(target.pos) )
                                 #schuss
-                                DiscProjectile((x,y),self.game.DISCMAXSPEED*(target.pos[0]-x)/dist,      self.game.DISCMAXSPEED*(target.pos[1]-y)/dist)
+                                DiscProjectile((x,y),
+                                   self.game.DISCMAXSPEED*((target.pos[0]-x)/dist)**2,
+                                   self.game.DISCMAXSPEED*((target.pos[1]-y)/dist)**2)
                             else:
                                 print("No target found")
                         if self.game.fleckanim[z] > 5:
