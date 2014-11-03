@@ -19,6 +19,7 @@ class Game(object):
     ACTORSPEEDMIN=10
     DISCTHROWERRANGE=150
     DISCMAXSPEED=100
+    SPAWNRATE = 0.02
 
     def __init__(self):
 
@@ -410,10 +411,10 @@ class Viewer(object):
 
         x=0
         y=0
-        fleckanim=[]
+        self.game.fleckanim=[]
         for zeile in self.game.level:
           for fleck in zeile:
-               fleckanim.append(0)
+               self.game.fleckanim.append(0)
                self.background.blit(self.game.legende[fleck],(x,y))
                x+=50
           y+=50
@@ -426,6 +427,7 @@ class Viewer(object):
 
         self.paint()
         running = True
+        millis = 0
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -433,8 +435,13 @@ class Viewer(object):
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         running = False
+                    # ------CHEAT KEY----------
+                    if event.key==pygame.K_F1:
+                       for px in range (0,240):
+                           DiscProjectile(pos=(random.randint(540,1024),random.randint(100,400)))
 
             milliseconds = self.clock.tick(self.fps)
+            millis += milliseconds
             seconds=milliseconds /1000.0
             self.playtime += milliseconds / 1000.0
             self.playtime += milliseconds / 1000.0
@@ -445,7 +452,59 @@ class Viewer(object):
             self.screen.blit(self.background, (0, 0)) # alles löschen
             # level aufbauen
 
+            # monster spawn
+            if random.random()<self.game.SPAWNRATE:
+               Monster(self.game.level)
 
+            # spritecollide
+            
+            if millis > 500: # jede halbe sekunde neue animation
+                millis=0
+                z=0
+                x=0
+                y=0
+                for zeile in self.game.level:
+                    for fleck in zeile:
+                        if fleck == "d" and self.game.fleckanim[z] == 0:      
+                            if random.random() < 0.005:
+                                self.game.fleckanim[z] += 1
+                        elif fleck == "g" and self.game.fleckanim[z] == 0:
+                            if random.random() < 0.5:
+                                self.game.fleckanim[z] += 1
+                        else:
+                            self.game.fleckanim[z] += 1 # normaler fleck
+                        if fleck == "v":
+                            targetlist=[]
+                            for target in self.monstergroup:
+                                #pass # pythagoras distanz ausrechnen
+                                #ziel wird gesucht reichweite getestet
+                                #zufälliges ziel wird abgeschossen
+                                distx=abs(target.pos[0]-x)
+                                disty=abs(target.pos[1]-y)
+                                dist=(distx**2+disty**2)**0.5
+                                if dist<self.game.DISCTHROWERRANGE:
+                                    targetlist.append(target)
+                            if len(targetlist)>0:
+                                target=random.choice(targetlist)
+                                print("taget gefunden{}".format(target.pos) )
+                                #schuss
+                                DiscProjectile((x,y),self.game.DISCMAXSPEED*(target.pos[0]-x)/dist,      self.game.DISCMAXSPEED*(target.pos[1]-y)/dist)
+                            else:
+                                print("No target found")
+                        if self.game.fleckanim[z] > 5:
+                            self.game.fleckanim[z] = 0       
+                        z+=1
+                        x+=50
+                    y+=50
+                    x=0
+                 
+                 
+            # laser
+            #ferris laserkanonenstrahl hier reincoden
+            pygame.draw.line(self.screen,(random.randint(0,255),random.randint(0,255),
+                             random.randint(0,255)),(675,25),(random.randint(0,200),
+                             random.randint(0,400)),random.randint(5,15))
+         
             #allgroup.clear(screen, background)
             self.allgroup.update(seconds)
             self.allgroup.draw(self.screen)
@@ -475,140 +534,5 @@ if __name__ == '__main__':
 
 
 
-#paolo=Monster(level) 
-
-x=0
-y=0
-fleckanim=[]
-for zeile in level:
-     for fleck in zeile:
-           fleckanim.append(0)
-           background.blit(legende[fleck],(x,y))
-           x+=50
-     y+=50
-     x=0
 
 
-
-
-
-
-
-spawnrate=0.02
-Monster(level)
-millis = 0
-lives=20
-while mainloop:
-    milliseconds = clock.tick(FPS) # do not go faster than this frame rate and that
-    seconds=milliseconds /1000.0
-    playtime += milliseconds / 1000.0
-    millis += milliseconds
-    
-    if random.random()<spawnrate:
-        Monster(level)
-    
-    if millis > 500: # jede halbe sekunde neue animation
-        millis=0
-        z=0
-        x=0
-        y=0
-        for zeile in level:
-            for fleck in zeile:
-                if fleck == "d" and fleckanim[z] == 0:      
-                    if random.random() < 0.005:
-                        fleckanim[z] += 1
-                elif fleck == "g" and fleckanim[z] == 0:
-                    if random.random() < 0.5:
-                        fleckanim[z] += 1
-                else:
-                    fleckanim[z] += 1 # normaler fleck
-                if fleck == "v":
-                    targetlist=[]
-                    for target in monstergroup:
-                        #pass # pythagoras distanz ausrechnen
-                        #ziel wird gesucht reichweite getestet
-                        #zufälliges ziel wird abgeschossen
-                        distx=abs(target.pos[0]-x)
-                        disty=abs(target.pos[1]-y)
-                        dist=(distx**2+disty**2)**0.5
-                        if dist<DISCTHROWERRANGE:
-                            targetlist.append(target)
-                    if len(targetlist)>0:
-                        target=random.choice(targetlist)
-                        print("taget gefunden{}".format(target.pos) )
-                        #schuss
-                        DiscProjectile((x,y),DISCMAXSPEED*(target.pos[0]-x)/dist,DISCMAXSPEED*(target.pos[1]-y)/dist)
-                    else:
-                        print("No target found")
-                if fleckanim[z] > 5:
-                    fleckanim[z] = 0       
-                z+=1
-                x+=50
-            y+=50
-            x=0
-        x=0
-        y=0
-        z=0
-        for zeile in level:
-             for fleck in zeile:
-                legende={"h":h[anim],#towertop
-                        "p":p,#nothing
-                        "i":i[anim],#dirt
-                        "g":g[anim],#lava
-                        "d":d[anim], #grass
-                        "v":v[anim], #discodiscgun
-                        "w":w[anim], #discogun
-                        "k":k[anim],  #konfetti
-                        "e":e
-                        }
-                z+=1
-                background.blit(legende[fleck],(x,y))
-                x+=50
-             y+=50
-             x=0
-             
-
-    # blitten
-    screen.blit(background, (0,0))    
-    allgroup.draw(screen)
-    
-    
-    #ferris laserkanonenstrahl hier reincoden
-    pygame.draw.line(screen,(random.randint(0,255),random.randint(0,255),random.randint(0,255)),(675,25),(random.randint(0,200),random.randint(0,400)),random.randint(5,15))
-    #pygame.draw.line(screen,(random.randint(0,255),random.randint(0,255),random.randint(0,255)),(475,225),(random.randint(0,200),random.randint(0,400)),random.randint(5,15))
-    #pygame.draw.line(screen,(random.randint(0,255),random.randint(0,255),random.randint(0,255)),(random.randint(0,1000),random.randint(0,500)),(random.randint(0,1000),random.randint(0,400)),random.randint(5,15))
-    #pygame.draw.line(screen,(random.randint(0,255),random.randint(0,255),random.randint(0,255)),(random.randint(0,1000),random.randint(0,500)),(random.randint(0,1000),random.randint(0,400)),random.randint(5,15))
-    #pygame.draw.line(screen,(random.randint(0,255),random.randint(0,255),random.randint(0,255)),(random.randint(0,1000),random.randint(0,500)),(random.randint(0,1000),random.randint(0,400)),random.randint(5,15))
-    #pygame.draw.line(screen,(random.randint(0,255),random.randint(0,255),random.randint(0,255)),(random.randint(0,1000),random.randint(0,500)),(random.randint(0,1000),random.randint(0,400)),random.randint(5,15))
-    #pygame.draw.line(screen,(random.randint(0,255),random.randint(0,255),random.randint(0,255)),(random.randint(0,1000),random.randint(0,500)),(random.randint(0,1000),random.randint(0,400)),random.randint(5,15))
-    
-    
-    # ---------------
-    
-    pygame.display.set_caption("lives:{}".format(Game.lives))
-    # ----- event handler -----
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            mainloop = False # pygame windows closed by user
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                mainloop = False # user pressed ESC
-            if event.key==pygame.K_F1:
-                for px in range (0,240):
-                    DiscProjectile(pos=(random.randint(540,1024),random.randint(100,400)))
-    #pygame.display.set_caption("Frame rate: %.2f frames per second. Playtime: %.2f seconds" % (clock.get_fps(),playtime),#("lives:{}".format(Game.lives)))
-    pygame.display.flip()          # flip the screen like in a flipbook
-    #sprite collide_________________________________________________________
-    for mymonster in monstergroup:
-         crashgroup = pygame.sprite.spritecollide(mymonster, projectilegroup, False)  # true würde dich löschen
-         for myprojectile in crashgroup:
-               mymonster.hitpoints-=0.50 # test for collision with bullet
-                                                
-                        
-    #allgroup.clear(screen, background)
-    allgroup.update(seconds)
-    allgroup.draw(screen)
-    
-    
-    
-print( "this 'game' was played for %.2f seconds" % playtime)
