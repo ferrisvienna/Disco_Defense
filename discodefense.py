@@ -156,7 +156,7 @@ class Fragment(pygame.sprite.Sprite):
             self.pos[0] += self.dx * seconds
             self.pos[1] += self.dy * seconds
             if Fragment.gravity:
-                self.dy += FORCE_OF_GRAVITY # gravity suck fragments down
+                self.dy += Game.FORCE_OF_GRAVITY # gravity suck fragments down
             self.rect.centerx = round(self.pos[0],0)
             self.rect.centery = round(self.pos[1],0)
 
@@ -327,7 +327,7 @@ class Monster(pygame.sprite.Sprite):
                 self.hitpoints=0
             if self.getChar()=="e":
                 self.hitpoints=0
-                Game.lives-=1
+                Game.LIVES-=1
             if self.getChar()=="h":
                 self.nomove = True
             self.dy=random.randint(-10, 10)
@@ -488,9 +488,18 @@ class Viewer(object):
                                 target=random.choice(targetlist)
                                 print("taget gefunden{}".format(target.pos) )
                                 #schuss
+                                #  fliegt nur nach rechts unten
+                                if target.pos[0]> x:
+                                    xsign = 1
+                                else:
+                                    xsign = -1
+                                if target.pos[1]> y:
+                                    ysign = 1
+                                else:
+                                    ysign = -1
                                 DiscProjectile((x,y),
-                                   self.game.DISCMAXSPEED*((target.pos[0]-x)/dist)**2,
-                                   self.game.DISCMAXSPEED*((target.pos[1]-y)/dist)**2)
+                                   xsign*self.game.DISCMAXSPEED*((target.pos[0]-x)/dist)**2,
+                                   ysign*self.game.DISCMAXSPEED*((target.pos[1]-y)/dist)**2)
                             else:
                                 print("No target found")
                         if self.game.fleckanim[z] > 5:
@@ -500,7 +509,13 @@ class Viewer(object):
                     y+=50
                     x=0
                  
-                 
+            
+            # monster take damage from disc
+            for mymonster in self.monstergroup:
+                crashgroup = pygame.sprite.spritecollide(mymonster, self.projectilegroup, False) # true würde dich löschen
+                for myprojectile in crashgroup:
+                      mymonster.hitpoints-=0.50 # test for collision with bullet
+            
             # laser
             #ferris laserkanonenstrahl hier reincoden
             pygame.draw.line(self.screen,(random.randint(0,255),random.randint(0,255),
@@ -521,7 +536,7 @@ class Viewer(object):
         """
         fw, fh = self.font.size(text)
         surface = self.font.render(text, True, (0, 0, 0))
-        self.screen.blit(surface, (50,150))
+        self.screen.blit(surface, (50,10))
 
 
 
