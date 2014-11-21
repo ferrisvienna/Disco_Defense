@@ -1,4 +1,4 @@
-#004BB1#!/usr/bin/env python
+		#004BB1#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """Disco Defense
 Open source game by Ferris(FerrisofVienna) Bartak
@@ -20,7 +20,6 @@ class Game(object):
     DISCTHROWERRANGE=150
     DISCMAXSPEED=100
     SPAWNRATE = 0.02
-    SECURITYSPAWNRATE = 0.001
 
     def __init__(self):
 
@@ -42,26 +41,6 @@ class Game(object):
         Monster.images[3].convert_alpha()
         Monster.images[4].convert_alpha()
         Monster.images[5].convert_alpha()
-        
-        
-        Security.images.append(pygame.image.load("data/walklr1.png")) # 0
-        Security.images[0].set_colorkey((255,0,182))
-        Security.images.append(pygame.image.load("data/walklr2.png")) # 1
-        Security.images[1].set_colorkey((255,0,182))
-        Security.images.append(pygame.image.load("data/walklr3.png")) # 2
-        Security.images[2].set_colorkey((255,0,182))
-        Security.images.append(pygame.image.load("data/walklr1.png")) # 3
-        Security.images[3].set_colorkey((255,0,182))
-        Security.images.append(pygame.image.load("data/walklr2.png")) # 4
-        Security.images[4].set_colorkey((255,0,182))
-        Security.images.append(pygame.image.load("data/walklr3.png")) # 5
-        Security.images[5].set_colorkey((255,0,182))
-        Security.images[0].convert_alpha()
-        Security.images[1].convert_alpha()
-        Security.images[2].convert_alpha()
-        Security.images[3].convert_alpha()
-        Security.images[4].convert_alpha()
-        Security.images[5].convert_alpha()
 
         self.h= [pygame.image.load("data/h0.png"),
                  pygame.image.load("data/h1.png"),
@@ -120,7 +99,7 @@ class Game(object):
                  pygame.image.load("data/discogunb.png"),
                  pygame.image.load("data/discogunl.png"),
                  pygame.image.load("data/discogunl.png"),
-                 pygame.image.load("data/discogunl.png")]         
+                 pygame.image.load("data/discogunl.png")]
         self.w[1].set_colorkey((255,0,182))
         self.w[2].set_colorkey((255,0,182))
         self.w[3].set_colorkey((255,0,182))
@@ -128,18 +107,13 @@ class Game(object):
         self.w[5].set_colorkey((255,0,182))
         self.w[0].set_colorkey((255,0,182))
         self.anim=0
-        self.o= [pygame.image.load("data/discoball.png"),
-                 pygame.image.load("data/discoball2.png")]
-        self.o[0].set_colorkey((255,0,182))
-        self.o[1].set_colorkey((255,0,182))
-        self.anim=0         
-        self.level=["hpppppoppppppwppppope",
+        self.level=["hppppppppppppwppppppe",
                     "ihpppppppppihippppppe",
-                    "idddgddddddhidvddddde",
-                    "ddddgddddddddddddddde",
-                    "gdddgddgdvddddkddddve",
-                    "ddddgddddddddggddddde",
-                    "ddddgdddddddddvddddde",
+                    "idddvddddddhidvddddde",
+                    "dddddddddddddddddddde",
+                    "vddddddgdvddddkddddve",
+                    "dddddddddddddggddddde",
+                    "ddddvdddddddddvddddde",
                     "gggggggdgggdggdggggge"]
         anim = 0
         self.legende={"h":self.h[anim],#towertop
@@ -150,8 +124,7 @@ class Game(object):
                       "v":self.v[anim], #discodiscgun
                       "w":self.w[anim], #discogun
                       "k":self.k[anim], #konfettigun
-                      "e":self.e, #end of world
-                      "o":self.o[anim] #discoball
+                      "e":self.e #end of world
                       }
 
 
@@ -183,7 +156,7 @@ class Fragment(pygame.sprite.Sprite):
             self.pos[0] += self.dx * seconds
             self.pos[1] += self.dy * seconds
             if Fragment.gravity:
-                self.dy += Game.FORCE_OF_GRAVITY # gravity suck fragments down
+                self.dy += FORCE_OF_GRAVITY # gravity suck fragments down
             self.rect.centerx = round(self.pos[0],0)
             self.rect.centery = round(self.pos[1],0)
 
@@ -192,27 +165,13 @@ class DiscProjectile(pygame.sprite.Sprite):
         """a projectile of a Disc gun"""
         gravity = False # fragments fall down ?
         image=pygame.image.load("data/disc.png")
-        def __init__(self, startpos=(random.randint(640,1024),random.randint(100,300)),
-                           targetpos=(random.randint(640,1024),random.randint(100,300))):
-            #         dx=random.randint(-Game.DISCMAXSPEED,Game.DISCMAXSPEED),
-            #         dy=random.randint(-Game.DISCMAXSPEED,Game.DISCMAXSPEED)):
+        def __init__(self, pos=(random.randint(640,1024),random.randint(100,300)),
+                     dx=random.randint(-Game.DISCMAXSPEED,Game.DISCMAXSPEED),
+                     dy=random.randint(-Game.DISCMAXSPEED,Game.DISCMAXSPEED)):
             pygame.sprite.Sprite.__init__(self, self.groups)
             self.pos = [0.0,0.0]
-            self.startpos = startpos
-            self.targetpos = targetpos
-            distancex = -self.startpos[0] + self.targetpos[0]
-            distancey = -self.startpos[1] + self.targetpos[1]
-            distance = (distancex**2 + distancey**2)**0.5
-            if distance > Game.DISCTHROWERRANGE:
-                self.kill()
-            self.dx = distancex / distance                              #|häschteg|#
-            self.dy = distancey / distance
-            self.dx *= Game.DISCMAXSPEED
-            self.dy *= Game.DISCMAXSPEED
-            self.hitpoints = 10
-            
-            self.pos[0] = startpos[0]
-            self.pos[1] = startpos[1]
+            self.pos[0] = pos[0]
+            self.pos[1] = pos[1]
             self.image = DiscProjectile.image
             self.image.set_colorkey((255,0,182)) # black transparent
             #pygame.draw.circle(self.image, (random.randint(1,255),0,0), (5,5),
@@ -223,17 +182,13 @@ class DiscProjectile(pygame.sprite.Sprite):
             self.lifetime = 1 + random.random()*5 # max 6 seconds
             self.time = 0.0
             #self.fragmentmaxspeed = 200  # try out other factors !
-            #self.dx = dx
-            #self.dy = dy
+            self.dx = dx
+            self.dy = dy
 
         def update(self, seconds):
             self.time += seconds
             if self.time > self.lifetime:
                 self.kill()
-            if self.hitpoints <= 0:
-                self.kill()
-                 
-             
             self.pos[0] += self.dx * seconds
             self.pos[1] += self.dy * seconds
             #if Fragment.gravity:
@@ -241,26 +196,7 @@ class DiscProjectile(pygame.sprite.Sprite):
             self.rect.centerx = round(self.pos[0],0)
             self.rect.centery = round(self.pos[1],0)
 
-class Flame (pygame.sprite.Sprite):
-    images = []
-    images.append(pygame.image.load("data/flamme.png"))
-    images.append(pygame.image.load("data/flamme2.png"))
-    for img in images:
-        img.set_colorkey((255,0,182))
-        #img.convert_alpha()
-        
-    def __init__(self, x, y):
-        pygame.sprite.Sprite.__init__(self,self.groups)
-        self.image = random.choice(Flame.images)
-        self.rect = self.image.get_rect()
-        self.x  = x
-        self.y  = y
-        self.rect.centerx = x
-        self.rect.centery = y
-    
-    def update(self, seconds):
-        self.kill()
-        
+
 class Healthbar(pygame.sprite.Sprite):
     """shows a bar with the hitpoints of a Bird sprite"""
     def __init__(self, boss):
@@ -300,7 +236,6 @@ class Monster(pygame.sprite.Sprite):
 
 
             pygame.sprite.Sprite.__init__(self, self.groups ) #call parent class. NEVER FORGET !
-            self.burntime = 0.0
             self.z = 0 # animationsnummer
             self.duration = 0.0 # how long was the current animation visible in seconds
             self.level=level
@@ -358,8 +293,8 @@ class Monster(pygame.sprite.Sprite):
             #print Bird.birds, "..."
             for _ in range(random.randint(7,20)):
                 Fragment(self.pos)
-            #Monster.monsters[self.number] = None # kill Bird in sprite dictionary
-            del(Monster.monsters[self.number]) 
+            Monster.monsters[self.number] = None # kill Bird in sprite dictionary
+
             pygame.sprite.Sprite.kill(self) # kill the actual Bird
 
 
@@ -387,140 +322,16 @@ class Monster(pygame.sprite.Sprite):
 
             #-------
             if self.getChar()=="g":
-                #self.hitpoints-=1 #lava?
-                self.burntime += 1.0
+                self.hitpoints-=1
             if self.getChar()=="?":
                 self.hitpoints=0
             if self.getChar()=="e":
                 self.hitpoints=0
-                Game.LIVES-=1
+                Game.lives-=1
             if self.getChar()=="h":
                 self.nomove = True
             self.dy=random.randint(-10, 10)
             self.dx= 20#random.randint(10,10)
-            if self.nomove:
-                self.dx = 0
-            self.pos[0] += self.dx * seconds
-            self.pos[1] += self.dy * seconds
-            # -- check if Bird out of screen
-            if not self.area.contains(self.rect):
-                #self.crashing = True # change colour later
-                # --- compare self.rect and area.rect
-                if self.pos[0] + self.rect.width/2 > self.area.right:
-                    self.pos[0] = self.area.right - self.rect.width/2
-                if self.pos[0] - self.rect.width/2 < self.area.left:
-                    self.pos[0] = self.area.left + self.rect.width/2
-                if self.pos[1] + self.rect.height/2 > self.area.bottom:
-                    self.pos[1] = self.area.bottom - self.rect.height/2
-                if self.pos[1] - self.rect.height/2 < self.area.top:
-                    self.pos[1] = self.area.top + self.rect.height/2
-            #--- calculate new position on screen -----
-            self.rect.centerx = round(self.pos[0],0)
-            self.rect.centery = round(self.pos[1],0)
-            #--- loose hitpoins
-            #if self.crashing:
-             #self.hitpoints -=1
-            
-            if self.burntime > 0 :
-                self.hitpoints -= 1.0
-                # reduce burntime
-                self.burntime -= 0.4
-                Flame(self.rect.centerx, self.rect.centery)
-            
-            if self.hitpoints <= 0:
-                self.kill()
-
-class Security(pygame.sprite.Sprite):
-        """Generic Monster"""
-        images=[]  # list of all images
-        # not necessary:
-        securitys = {} # a dictionary of all monsters
-        number = 0
-
-        def __init__(self, level, startpos=(-1,200), hitpointsfull=1200):
-
-
-            pygame.sprite.Sprite.__init__(self, self.groups ) #call parent class. NEVER FORGET !
-            self.burntime = 0.0
-            if startpos[0]== -1:
-                startpos=(Viewer.screenwidth, random.randint(150,250))
-            self.z = 0 # animationsnummer
-            self.duration = 0.0 # how long was the current animation visible in seconds
-            self.level=level
-            self.nomove = False
-            #startpos=(0,screen.get_rect().center[1])
-            startpos=(Viewer.screenwidth,random.randint(100,350))
-            self.pos = [float(startpos[0]),float (startpos[1])] # dummy values to create a list
-            #self.pos[0] = float(startpos[0]) # float for more precise calculation
-            #self.pos[1] = float(startpos[1])
-           # self.area = screen.get_rect()
-            self.area = pygame.Rect(0,100,1024,300)
-            self.image = Security.images[self.z]
-            self.hitpointsfull = float(hitpointsfull) # maximal hitpoints , float makes decimal
-            self.hitpoints = float(hitpointsfull) # actual hitpoints
-            self.rect = self.image.get_rect()
-            self.radius = max(self.rect.width, self.rect.height) / 2.0
-            self.dx= random.random()*-10+20
-            self.dy= random.randint(-70,70)
-            self.rect.centerx = round(self.pos[0],0)
-            self.rect.centery = round(self.pos[1],0) 
-            #self.newspeed()
-            #self.cleanstatus()
-            #self.catched = False
-            #self.crashing = False
-            #--- not necessary:
-            self.number = Security.number # get my personal Birdnumber
-            Security.number+= 1           # increase the number for next Bird
-            Security.securitys[self.number] = self #
-            Healthbar(self)
-
-
-        #def newspeed(self):
-            # new birdspeed, but not 0
-            #speedrandom = random.choice([-1,1]) # flip a coin
-            #self.dx = random.random() * ACTORSPEEDMAX * speedrandom + speedrandom
-            #self.dy = random.random() * ACTORSPEEDMAX * speedrandom + speedrandom
-        def getChar(self):
-            #Tile = 50*50
-            x=int(self.pos[0]/50)
-            y=int(self.pos[1]/50)+0 # correction value to get the tile under the feet doesn't actually work :\
-            try:
-                char=self.level[y][x]
-            except:
-                char="?"
-            return char
-
-
-
-        def kill(self):
-            for _ in range(random.randint(10,30)):
-                Fragment(self.pos)
-            Security.securitys[self.number] = None # kill Bird in sprite dictionary
-
-            pygame.sprite.Sprite.kill(self) # kill the actual Bird
-
-        def update(self, seconds):
-            self.duration += seconds
-            if self.duration > 0.5:
-                self.duration= 0
-                self.z  +=1
-                if self.z >= len(Security.images):
-                    self.z = 0
-                self.image=Security.images[self.z]
-
-            #-------
-            #if self.getChar()=="g":
-                #self.hitpoints-=1 #lava?
-                #self.burntime += 1.0
-            if self.getChar()=="?":
-                self.hitpoints=0
-            #if self.getChar()=="e":
-                #self.hitpoints=0
-                #Game.LIVES-=1
-            if self.getChar()=="h":
-                self.nomove = True
-            self.dy=random.randint(-20, 20)
-            self.dx= -25#random.randint(10,10)
             if self.nomove:
                 self.dx = 0
             self.pos[0] += self.dx * seconds
@@ -546,22 +357,16 @@ class Security(pygame.sprite.Sprite):
             #--- loose hitpoins
             #if self.crashing:
              #self.hitpoints -=1
-            #if self.burntime > 0 :
-                #self.hitpoints -= 1.0
-                # reduce burntime
-                #self.burntime -= 0.4
-                #Flame(self.rect.centerx, self.rect.centery)
-            
+            #--- check if still alive if not, then let a juicy fart off
             if self.hitpoints <= 0:
                 self.kill()
 
 
+
 class Viewer(object):
 
-     screenwidth = 1024
-     screenheight = 400
-     
-     def __init__(self, width=0, height=0, fps=30):
+
+     def __init__(self, width=1024, height=400, fps=30):
         """Initialize pygame, window, background, font,...
            default arguments
         """
@@ -571,14 +376,6 @@ class Viewer(object):
         pygame.display.set_caption("Press ESC to quit")
         self.width = width
         self.height = height
-        if self.width == 0:
-            self.width = Viewer.screenwidth
-        else:
-            Viewer.screenwidth = width
-        if self.height == 0:
-            self.height = Viewer.screenheight
-        else:
-            Viewer.screenheight = self.height
         self.screen = pygame.display.set_mode((self.width, self.height), pygame.DOUBLEBUF)
         self.background = pygame.Surface(self.screen.get_size()).convert()
         #self.background.fill((255,255,255)) # fill background white
@@ -601,16 +398,13 @@ class Viewer(object):
         self.allgroup=pygame.sprite.LayeredUpdates()
         self.bargroup = pygame.sprite.Group()
         self.fragmentgroup = pygame.sprite.Group()
-        self.securitygroup= pygame.sprite.Group()
 
         DiscProjectile.groups = self.allgroup, self.projectilegroup
         Monster.groups =  self.allgroup, self.monstergroup
         Fragment.groups = self.allgroup, self.fragmentgroup
         Healthbar.groups = self.allgroup, self.bargroup
-        Flame.groups = self.allgroup      
-        Security.groups = self.allgroup, self.securitygroup
+
         self.game = Game()
-        
 
      def paint(self):
         # paint the level of self.game
@@ -630,8 +424,7 @@ class Viewer(object):
         """The mainloop
         """
 
-        lasertimer = 0.0 # ....klasse !!
-        opfernummer = None
+
         self.paint()
         running = True
         millis = 0
@@ -662,10 +455,6 @@ class Viewer(object):
             # monster spawn
             if random.random()<self.game.SPAWNRATE:
                Monster(self.game.level)
-               
-               
-            if random.random()<self.game.SECURITYSPAWNRATE:
-               Security(self.game.level)
 
             # spritecollide
             
@@ -699,16 +488,9 @@ class Viewer(object):
                                 target=random.choice(targetlist)
                                 print("taget gefunden{}".format(target.pos) )
                                 #schuss
-                                #  fliegt nur nach rechts unten
-                                if target.pos[0]> x:
-                                    xsign = 1
-                                else:
-                                    xsign = -1
-                                if target.pos[1]> y:
-                                    ysign = 1
-                                else:
-                                    ysign = -1
-                                DiscProjectile((x,y),(target.pos[0], target.pos[1]))
+                                DiscProjectile((x,y),
+                                   self.game.DISCMAXSPEED*((target.pos[0]-x)/dist)**2,
+                                   self.game.DISCMAXSPEED*((target.pos[1]-y)/dist)**2)
                             else:
                                 print("No target found")
                         if self.game.fleckanim[z] > 5:
@@ -718,53 +500,12 @@ class Viewer(object):
                     y+=50
                     x=0
                  
-            
-            # monster take damage from discs
-            for mymonster in self.monstergroup:
-                crashgroup = pygame.sprite.spritecollide(mymonster, self.projectilegroup, False)
-                for myprojectile in crashgroup:
-                      mymonster.hitpoints-=0.25 # test for collision with bullet
-                      myprojectile.hitpoints-=0.25
-            #and securitys
-            for mysecurity in self.securitygroup:
-                crashgroup = pygame.sprite.spritecollide(mysecurity, self.monstergroup, False)
-                for mymonster in crashgroup:
-                      mymonster.hitpoints-=4 # test for collision with bullet
-                      mymonster.pos[0]-=random.randint(5,20)
-                      mysecurity.hitpoints-=5
-                      mysecurity.pos[0]+=random.randint(1,7)
-            # laser # soll eine Klasse werden!!!
-            if lasertimer <= 0:
-                if len(Monster.monsters) > 0:
-                      opfernummer = random.choice(list(Monster.monsters.keys()))
-                      opfer = Monster.monsters[opfernummer]  
-                      lasertimer = 2.0
-                      print("habe ofer ausgesucht")
-            else:
-                lasertimer -= seconds
-                # gibt es ein Opfer?
-                if opfernummer != None:
-                    #existiert das Opfer noch in der Monstergruppe ?
-                    if opfernummer in Monster.monsters:
-                                                # tödlicher weißer laser
-                        pygame.draw.line(self.screen,
-                             (random.randint(200,255),
-                              random.randint(200,255),
-                              random.randint(200,255)),
-                             (675,25),
-                             (opfer.pos[0], opfer.pos[1]),7)
-                        opfer.hitpoints-=1
-                
-                
-            # bunter lichtlaser
+                 
+            # laser
+            #ferris laserkanonenstrahl hier reincoden
             pygame.draw.line(self.screen,(random.randint(0,255),random.randint(0,255),
-                             random.randint(0,255)),(925,25),(random.randint(0,950),
-                             random.randint(0,500)),random.randint(5,15))
-            # bimter lichtlaser
-            pygame.draw.line(self.screen,(random.randint(0,255),random.randint(0,255),
-                             random.randint(0,255)),(325,25),(random.randint(0,950),
-                             random.randint(0,500)),random.randint(5,15))
-            
+                             random.randint(0,255)),(675,25),(random.randint(0,200),
+                             random.randint(0,400)),random.randint(5,15))
          
             #allgroup.clear(screen, background)
             self.allgroup.update(seconds)
@@ -780,7 +521,7 @@ class Viewer(object):
         """
         fw, fh = self.font.size(text)
         surface = self.font.render(text, True, (0, 0, 0))
-        self.screen.blit(surface, (25,5))
+        self.screen.blit(surface, (50,150))
 
 
 
@@ -791,6 +532,7 @@ if __name__ == '__main__':
 
     # call with width of window and fps
     Viewer().run()
+
 
 
 
