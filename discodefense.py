@@ -230,11 +230,10 @@ class DiscoLaser(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.hitpoints = 300.0
         self.hitpointsfull = 300.0
-        self.reload_time = 0.1
-        self.reload_time_full = 0.5
-        
-    def update(self, seconds):
-        pass
+        self.reload_time = 0.2
+        self.reload_time_full = 0.2
+        def update(self,seconds):
+            pass
         
         
         
@@ -768,7 +767,7 @@ class Viewer(object):
                 crashgroup = pygame.sprite.spritecollide(mymonster, self.projectilegroup, False)
                 for myprojectile in crashgroup:
                       mymonster.hitpoints-=0.25
-                      mymonster.pos[0] -= 5 # test for collision with bullet
+                      #mymonster.pos[0] -= 5 # test for collision with bullet
                       myprojectile.hitpoints-=0.25
             #and securitys
             for mysecurity in self.securitygroup:
