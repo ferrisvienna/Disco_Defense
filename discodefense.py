@@ -19,8 +19,8 @@ class Game(object):
     ACTORSPEEDMIN=10
     DISCTHROWERRANGE=150
     DISCMAXSPEED=100
-    SPAWNRATE =0.01
-    SECURITYSPAWNRATE = 0.0005
+    SPAWNRATE =0.05
+    SECURITYSPAWNRATE = 0.005
 #rebalance
     def __init__(self):
 
@@ -531,7 +531,6 @@ class Security(pygame.sprite.Sprite):
             return char
 
 
-
         def kill(self):
             for _ in range(random.randint(10,30)):
                 Fragment(self.pos)
@@ -559,7 +558,9 @@ class Security(pygame.sprite.Sprite):
                 #Game.LIVES-=1
             if self.getChar()=="h":
                 self.nomove = True
-            self.dy=random.randint(-20, 20)
+            else:
+                self.nomove = False
+            self.dy=random.randint(-50, 50)
             self.dx= -25#random.randint(10,10)
             if self.nomove:
                 self.dx = 0
