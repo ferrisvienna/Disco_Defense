@@ -801,7 +801,7 @@ class Viewer(object):
                              (opfer.pos[0], opfer.pos[1]),7)
                         opfer.hitpoints-= 1.0
                         opfer.burntime = 4.0
-                        opfer.pos[0] -= 3
+                        #opfer.pos[0] -= 3
                 pygame.draw.line #rebalance
                 
             # bunter lichtlaser
