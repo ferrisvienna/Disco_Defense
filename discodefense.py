@@ -19,9 +19,9 @@ class Game(object):
     ACTORSPEEDMIN=10
     DISCTHROWERRANGE=150
     DISCMAXSPEED=100
-    SPAWNRATE = 0.02
-    SECURITYSPAWNRATE = 0.001
-
+    SPAWNRATE =0.01
+    SECURITYSPAWNRATE = 0.0005
+#rebalance
     def __init__(self):
 
         Monster.images.append(pygame.image.load("data/discodudel.png")) # 0
@@ -44,24 +44,59 @@ class Game(object):
         Monster.images[5].convert_alpha()
         
         
-        Security.images.append(pygame.image.load("data/walklr1.png")) # 0
+        #Monster_rare.images.append(pygame.image.load("data/walkll1.png")) # 0
+        #Monster_rare.images[0].set_colorkey((255,0,182))
+        #Monster_rare.images.append(pygame.image.load("data/walkll2.png")) # 1
+        #Monster_rare.images[1].set_colorkey((255,0,182))
+        #Monster1.images.append(pygame.image.load("data/walkll3.png")) # 2
+        #Monster1.images[2].set_colorkey((255,0,182))
+        #Monster1.images.append(pygame.image.load("data/walkll1.png")) # 3
+        #Monster1.images[3].set_colorkey((255,0,182))
+        #Monster1.images.append(pygame.image.load("data/walkll2.png")) # 4
+        #Monster1.images[4].set_colorkey((255,0,182))
+        #Monster1.images.append(pygame.image.load("data/walkll3.png")) # 5
+        #Monster1.images[5].set_colorkey((255,0,182))
+        #Monster1.images[0].convert_alpha()
+        #Monster1.images[1].convert_alpha()
+        #Monster1.images[2].convert_alpha()
+        #Monster1.images[3].convert_alpha()
+        #Monster1.images[4].convert_alpha()
+        #Monster1.images[5].convert_alpha()
+        
+        Security.images.append(pygame.image.load("data/securityw1.png")) # 0
         Security.images[0].set_colorkey((255,0,182))
-        Security.images.append(pygame.image.load("data/walklr2.png")) # 1
+        Security.images.append(pygame.image.load("data/securityw2.png")) # 1
         Security.images[1].set_colorkey((255,0,182))
-        Security.images.append(pygame.image.load("data/walklr3.png")) # 2
+        Security.images.append(pygame.image.load("data/securityw1.png")) # 2
         Security.images[2].set_colorkey((255,0,182))
-        Security.images.append(pygame.image.load("data/walklr1.png")) # 3
+        Security.images.append(pygame.image.load("data/securityw2.png")) # 3
         Security.images[3].set_colorkey((255,0,182))
-        Security.images.append(pygame.image.load("data/walklr2.png")) # 4
+        Security.images.append(pygame.image.load("data/securityw1.png")) # 4
         Security.images[4].set_colorkey((255,0,182))
-        Security.images.append(pygame.image.load("data/walklr3.png")) # 5
+        Security.images.append(pygame.image.load("data/securityw2.png")) # 5
         Security.images[5].set_colorkey((255,0,182))
+        Security.images.append(pygame.image.load("data/securityw2.png")) # 5
+        Security.images[6].set_colorkey((255,0,182))
+        Security.images.append(pygame.image.load("data/securitywa1.png")) #6
+        Security.images[7].set_colorkey((255,0,182))
+        Security.images.append(pygame.image.load("data/securitywa2.png")) #7
+        Security.images[8].set_colorkey((255,0,182))
+        
+        
         Security.images[0].convert_alpha()
         Security.images[1].convert_alpha()
         Security.images[2].convert_alpha()
         Security.images[3].convert_alpha()
         Security.images[4].convert_alpha()
         Security.images[5].convert_alpha()
+        Security.images[6].convert_alpha()
+        Security.images[7].convert_alpha()
+
+
+
+
+
+
 
         self.h= [pygame.image.load("data/h0.png"),
                  pygame.image.load("data/h1.png"),
@@ -187,7 +222,23 @@ class Fragment(pygame.sprite.Sprite):
             self.rect.centerx = round(self.pos[0],0)
             self.rect.centery = round(self.pos[1],0)
 
-
+class DiscoLaser(pygame.sprite.Sprite):
+    #a laser gun
+    gravity= False
+    image=pygame.image.load("data/discogun.png")
+    def __init__(self,x,y):
+        pygame.sprite.Sprite.__init__(self, self.groups)
+        self.hitpoints = 300.0
+        self.hitpointsfull = 300.0
+        self.reload_time = 0.1
+        self.reload_time_full = 0.5
+        
+    def update(self, seconds):
+        pass
+        
+        
+        
+        
 class DiscProjectile(pygame.sprite.Sprite):
         """a projectile of a Disc gun"""
         gravity = False # fragments fall down ?
@@ -205,7 +256,7 @@ class DiscProjectile(pygame.sprite.Sprite):
             distance = (distancex**2 + distancey**2)**0.5
             if distance > Game.DISCTHROWERRANGE:
                 self.kill()
-            self.dx = distancex / distance                              #|häschteg|#
+            self.dx = distancex / distance                              
             self.dy = distancey / distance
             self.dx *= Game.DISCMAXSPEED
             self.dy *= Game.DISCMAXSPEED
@@ -297,7 +348,7 @@ class Monster(pygame.sprite.Sprite):
         number = 0
 
         def __init__(self, level, startpos=(0,200), hitpointsfull=600):
-
+        #rebalance
 
             pygame.sprite.Sprite.__init__(self, self.groups ) #call parent class. NEVER FORGET !
             self.burntime = 0.0
@@ -318,25 +369,14 @@ class Monster(pygame.sprite.Sprite):
             self.rect = self.image.get_rect()
             self.radius = max(self.rect.width, self.rect.height) / 2.0
             self.dx= random.random()*10+20
-            self.dy= random.randint(-70,70)
+            self.dy= random.randint(-70,70)#rebalance
             self.rect.centerx = round(self.pos[0],0)
-            self.rect.centery = round(self.pos[1],0) #kackabraun
-            #self.newspeed()
-            #self.cleanstatus()
-            #self.catched = False
-            #self.crashing = False
+            self.rect.centery = round(self.pos[1],0)
             #--- not necessary:
             self.number = Monster.number # get my personal Birdnumber
             Monster.number+= 1           # increase the number for next Bird
             Monster.monsters[self.number] = self #
             Healthbar(self)
-
-
-        #def newspeed(self):
-            # new birdspeed, but not 0
-            #speedrandom = random.choice([-1,1]) # flip a coin
-            #self.dx = random.random() * ACTORSPEEDMAX * speedrandom + speedrandom
-            #self.dy = random.random() * ACTORSPEEDMAX * speedrandom + speedrandom
         def getChar(self):
             #Tile = 50*50
             x=int(self.pos[0]/50)
@@ -469,6 +509,7 @@ class Security(pygame.sprite.Sprite):
             #self.catched = False
             #self.crashing = False
             #--- not necessary:
+            self.taser = False
             self.number = Security.number # get my personal Birdnumber
             Security.number+= 1           # increase the number for next Bird
             Security.securitys[self.number] = self #
@@ -642,10 +683,13 @@ class Viewer(object):
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         running = False
+                    if event.key==pygame.K_F2:
+                        for px in range (0,5):
+                            Security(self.game.level, hitpointsfull = 2000)
                     # ------CHEAT KEY----------
-                    if event.key==pygame.K_F1:
-                       for px in range (0,240):
-                           DiscProjectile(pos=(random.randint(540,1024),random.randint(100,400)))
+                    #if event.key==pygame.K_F1:
+                       #for px in range (0,240):
+                           #DiscProjectile(pos=(random.randint(540,1024),random.randint(100,400)))12
 
             milliseconds = self.clock.tick(self.fps)
             millis += milliseconds
@@ -697,7 +741,7 @@ class Viewer(object):
                                     targetlist.append(target)
                             if len(targetlist)>0:
                                 target=random.choice(targetlist)
-                                print("taget gefunden{}".format(target.pos) )
+                                print("taget found{}".format(target.pos) )
                                 #schuss
                                 #  fliegt nur nach rechts unten
                                 if target.pos[0]> x:
@@ -723,23 +767,25 @@ class Viewer(object):
             for mymonster in self.monstergroup:
                 crashgroup = pygame.sprite.spritecollide(mymonster, self.projectilegroup, False)
                 for myprojectile in crashgroup:
-                      mymonster.hitpoints-=0.25 # test for collision with bullet
+                      mymonster.hitpoints-=0.25
+                      mymonster.pos[0] -= 5 # test for collision with bullet
                       myprojectile.hitpoints-=0.25
             #and securitys
             for mysecurity in self.securitygroup:
                 crashgroup = pygame.sprite.spritecollide(mysecurity, self.monstergroup, False)
+                mysecurity.taser = False
                 for mymonster in crashgroup:
                       mymonster.hitpoints-=4 # test for collision with bullet
                       mymonster.pos[0]-=random.randint(5,20)
                       mysecurity.hitpoints-=5
                       mysecurity.pos[0]+=random.randint(1,7)
+                      mysecurity.taser = True
             # laser # soll eine Klasse werden!!!
             if lasertimer <= 0:
                 if len(Monster.monsters) > 0:
                       opfernummer = random.choice(list(Monster.monsters.keys()))
                       opfer = Monster.monsters[opfernummer]  
-                      lasertimer = 2.0
-                      print("habe ofer ausgesucht")
+                      lasertimer = 4 #rebalance
             else:
                 lasertimer -= seconds
                 # gibt es ein Opfer?
@@ -753,17 +799,19 @@ class Viewer(object):
                               random.randint(200,255)),
                              (675,25),
                              (opfer.pos[0], opfer.pos[1]),7)
-                        opfer.hitpoints-=1
-                
+                        opfer.hitpoints-= 1.0
+                        opfer.burntime = 4.0
+                        #opfer.pos[0] -= 3
+                pygame.draw.line #rebalance
                 
             # bunter lichtlaser
-            pygame.draw.line(self.screen,(random.randint(0,255),random.randint(0,255),
-                             random.randint(0,255)),(925,25),(random.randint(0,950),
-                             random.randint(0,500)),random.randint(5,15))
-            # bimter lichtlaser
-            pygame.draw.line(self.screen,(random.randint(0,255),random.randint(0,255),
-                             random.randint(0,255)),(325,25),(random.randint(0,950),
-                             random.randint(0,500)),random.randint(5,15))
+            #pygame.draw.line(self.screen,(random.randint(0,255),random.randint(0,255),
+                             #random.randint(0,255)),(925,25),(random.randint(0,950),
+                             #random.randint(0,500)),random.randint(5,15))
+            # bunter lichtlaser
+            #pygame.draw.line(self.screen,(random.randint(0,255),random.randint(0,255),
+                             #random.randint(0,255)),(325,25),(random.randint(0,950),
+                             #random.randint(0,500)),random.randint(5,15))
             
          
             #allgroup.clear(screen, background)
