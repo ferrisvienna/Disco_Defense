@@ -222,7 +222,7 @@ class Fragment(pygame.sprite.Sprite):
             self.rect.centerx = round(self.pos[0],0)
             self.rect.centery = round(self.pos[1],0)
 
-class DiscoLaser(pygame.sprite.Sprite):
+class DiscoLaserCannon(pygame.sprite.Sprite):
     #a laser gun
     gravity= False
     image=pygame.image.load("data/discogun.png")
@@ -231,13 +231,15 @@ class DiscoLaser(pygame.sprite.Sprite):
         self.hitpoints = 300.0
         self.hitpointsfull = 300.0
         self.reload_time = 0.2
-        self.reload_time_full = 0.2
-        def update(self,seconds):
-            pass
+        self.reload_time_full = 0.2#
+        self.image = DiscoLaserCannon.image
+        self.rect = self.image.get_rect()
+    def update(self,seconds):
+        pass
+
         
         
-        
-        
+ 
 class DiscProjectile(pygame.sprite.Sprite):
         """a projectile of a Disc gun"""
         gravity = False # fragments fall down ?
@@ -599,7 +601,7 @@ class Security(pygame.sprite.Sprite):
 
 class Viewer(object):
 
-     screenwidth = 1024
+     screenwidth = 1050
      screenheight = 400
      
      def __init__(self, width=0, height=0, fps=30):
@@ -637,6 +639,7 @@ class Viewer(object):
         self.fragmentgroup = pygame.sprite.Group()
         self.allgroup = pygame.sprite.LayeredUpdates()
         self.projectilegroup = pygame.sprite.Group()
+        self.cannongroup = pygame.sprite.Group()
 
         self.monstergroup=pygame.sprite.Group()
         self.allgroup=pygame.sprite.LayeredUpdates()
@@ -645,6 +648,7 @@ class Viewer(object):
         self.securitygroup= pygame.sprite.Group()
 
         DiscProjectile.groups = self.allgroup, self.projectilegroup
+        DiscoLaserCannon.groups = self.allgroup, self.cannongroup
         Monster.groups =  self.allgroup, self.monstergroup
         Fragment.groups = self.allgroup, self.fragmentgroup
         Healthbar.groups = self.allgroup, self.bargroup
@@ -655,7 +659,6 @@ class Viewer(object):
 
      def paint(self):
         # paint the level of self.game
-
         x=0
         y=0
         self.game.fleckanim=[]
@@ -666,11 +669,12 @@ class Viewer(object):
                x+=50
           y+=50
           x=0
-
+        DiscoLaserCannon( 100,100) 
+          
+          
      def run(self):
         """The mainloop
         """
-
         lasertimer = 0.0 # ....klasse !!
         opfernummer = None
         self.paint()
