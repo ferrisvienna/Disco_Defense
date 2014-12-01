@@ -233,7 +233,13 @@ class DiscoLaserCannon(pygame.sprite.Sprite):
         self.reload_time = 0.2
         self.reload_time_full = 0.2#
         self.image = DiscoLaserCannon.image
+        #efor  in images:
+        self.image.set_colorkey((255,0,182))
         self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.centerx = self.x
+        self.rect.centery = self.y
     def update(self,seconds):
         pass
 
@@ -262,7 +268,6 @@ class DiscProjectile(pygame.sprite.Sprite):
             self.dx *= Game.DISCMAXSPEED
             self.dy *= Game.DISCMAXSPEED
             self.hitpoints = 10
-            
             self.pos[0] = startpos[0]
             self.pos[1] = startpos[1]
             self.image = DiscProjectile.image
@@ -632,7 +637,6 @@ class Viewer(object):
         self.font = pygame.font.SysFont('mono', 24, bold=True)
 
         # sprite groups
-
         self.playergroup = pygame.sprite.LayeredUpdates()
         self.bargroup = pygame.sprite.Group()
         self.stuffgroup = pygame.sprite.Group()
@@ -656,7 +660,6 @@ class Viewer(object):
         Security.groups = self.allgroup, self.securitygroup
         self.game = Game()
         
-
      def paint(self):
         # paint the level of self.game
         x=0
@@ -669,8 +672,8 @@ class Viewer(object):
                x+=50
           y+=50
           x=0
-        DiscoLaserCannon( 100,100) 
-          
+        DiscoLaserCannon(500,100) 
+        
           
      def run(self):
         """The mainloop
