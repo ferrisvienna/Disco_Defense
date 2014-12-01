@@ -19,7 +19,7 @@ class Game(object):
     ACTORSPEEDMIN=10
     DISCTHROWERRANGE=150
     DISCMAXSPEED=100
-    SPAWNRATE =0.05
+    SPAWNRATE =1.05
     SECURITYSPAWNRATE = 0.005
 #rebalance
     def __init__(self):
@@ -91,12 +91,6 @@ class Game(object):
         Security.images[5].convert_alpha()
         Security.images[6].convert_alpha()
         Security.images[7].convert_alpha()
-
-
-
-
-
-
 
         self.h= [pygame.image.load("data/h0.png"),
                  pygame.image.load("data/h1.png"),
@@ -226,7 +220,9 @@ class DiscoLaserCannon(pygame.sprite.Sprite):
     #a laser gun
     gravity= False
     image=pygame.image.load("data/discogun.png")
-    def __init__(self,x,y):
+    number = 0
+    
+    def __init__(self,x,y, screen):
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.hitpoints = 300.0
         self.hitpointsfull = 300.0
@@ -236,13 +232,58 @@ class DiscoLaserCannon(pygame.sprite.Sprite):
         #efor  in images:
         self.image.set_colorkey((255,0,182))
         self.rect = self.image.get_rect()
+        self.screen = screen
         self.x = x
         self.y = y
         self.rect.centerx = self.x
         self.rect.centery = self.y
+        self.lasermaxburntime =  random.random()*2+2
+        self.laserburntime = 0
+        self.beam = False
+        self.opfernummer = None
+        self.number = DiscoLaserCannon.number
+        DiscoLaserCannon.number += 1
+        #DiscoLaserCannonCannon.number += 1           # increase the number for next Bird
+        #DiscoLaserCannon.DiscoLaserCannons[self.number] = self
+        Healthbar(self)
+        
+        
     def update(self,seconds):
-        pass
+        self.reload_time += seconds
+        if self.hitpoints < 1:
+            self.kill()
+        if self.reload_time > self.reload_time_full:
+            # choose new target
+            #opfernummer = None
+            if len(Monster.monsters) > 0:
+                      self.opfernummer = random.choice(list(Monster.monsters.keys()))
+                      self.opfer = Monster.monsters[self.opfernummer]  
+                      #lasertimer = 4 #rebalance
+             
+            if self.beam: 
+                self.laserburntime += seconds
+                if self.laserburntime > self.lasermaxburntime:
+                      self.reload_time = 0
+                      self.laserburntime = 0
+                      self.beam = False
 
+                #lasertimer -= seconds
+            # gibt es ein Opfer?
+            if self.opfernummer != None:
+                    #existiert das Opfer noch in der Monstergruppe ?
+                    if self.opfernummer in Monster.monsters:
+                                                # tödlicher weißer laser
+                        pygame.draw.line(self.screen,
+                             (random.randint(200,255),
+                              random.randint(200,255),
+                              random.randint(200,255)),
+                             (self.x,self.y),
+                             (self.opfer.pos[0], self.opfer.pos[1]),7)
+                        self.opfer.hitpoints-= 1.0
+                        self.opfer.burntime = 4.0
+                        #opfer.pos[0] -= 3
+                        self.beam = True
+                       
         
         
  
@@ -341,8 +382,7 @@ class Healthbar(pygame.sprite.Sprite):
         self.rect.centery = self.boss.rect.centery - self.boss.rect.height /2 - 10
         #check if boss is still alive if not
         if self.boss.hitpoints<1:
-            self.kill()
-         #   self.kill() # kill the hitbar
+         self.kill()
 
 
 
@@ -606,7 +646,7 @@ class Security(pygame.sprite.Sprite):
 
 class Viewer(object):
 
-     screenwidth = 1050
+     screenwidth = 1025
      screenheight = 400
      
      def __init__(self, width=0, height=0, fps=30):
@@ -672,7 +712,17 @@ class Viewer(object):
                x+=50
           y+=50
           x=0
-        DiscoLaserCannon(500,100) 
+        DiscoLaserCannon(500,100, self.screen) 
+        #DiscoLaserCannon(700,100, self.screen) 
+        #DiscoLaserCannon(600,100, self.screen) 
+        #DiscoLaserCannon(400,100, self.screen) 
+        #DiscoLaserCannon(900,100, self.screen) 
+        #DiscoLaserCannon(500,200, self.screen) 
+        #DiscoLaserCannon(700,350, self.screen) 
+        #DiscoLaserCannon(600,350, self.screen) 
+        #DiscoLaserCannon(400,450, self.screen) 
+        #DiscoLaserCannon(900,550, self.screen) 
+        #DiscoLaserCannon()
         
           
      def run(self):
@@ -777,6 +827,12 @@ class Viewer(object):
                       mymonster.hitpoints-=0.25
                       #mymonster.pos[0] -= 5 # test for collision with bullet
                       myprojectile.hitpoints-=0.25
+            for mymonster in self.monstergroup:
+                crashgroup = pygame.sprite.spritecollide(mymonster, self.cannongroup, False)
+                for mycannon in crashgroup:
+                      #mymonster.hitpoints-=0.25
+                      #mymonster.pos[0] -= 5 # test for collision with bullet
+                      mycannon.hitpoints-=0.25
             #and securitys
             for mysecurity in self.securitygroup:
                 crashgroup = pygame.sprite.spritecollide(mysecurity, self.monstergroup, False)
@@ -788,28 +844,8 @@ class Viewer(object):
                       mysecurity.pos[0]+=random.randint(1,7)
                       mysecurity.taser = True
             # laser # soll eine Klasse werden!!!
-            if lasertimer <= 0:
-                if len(Monster.monsters) > 0:
-                      opfernummer = random.choice(list(Monster.monsters.keys()))
-                      opfer = Monster.monsters[opfernummer]  
-                      lasertimer = 4 #rebalance
-            else:
-                lasertimer -= seconds
-                # gibt es ein Opfer?
-                if opfernummer != None:
-                    #existiert das Opfer noch in der Monstergruppe ?
-                    if opfernummer in Monster.monsters:
-                                                # tödlicher weißer laser
-                        pygame.draw.line(self.screen,
-                             (random.randint(200,255),
-                              random.randint(200,255),
-                              random.randint(200,255)),
-                             (675,25),
-                             (opfer.pos[0], opfer.pos[1]),7)
-                        opfer.hitpoints-= 1.0
-                        opfer.burntime = 4.0
-                        #opfer.pos[0] -= 3
-                pygame.draw.line #rebalance
+
+                #pygame.draw.line #rebalance
                 
             # bunter lichtlaser
             #pygame.draw.line(self.screen,(random.randint(0,255),random.randint(0,255),
