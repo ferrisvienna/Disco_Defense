@@ -19,7 +19,7 @@ class Game(object):
     ACTORSPEEDMIN=10
     DISCTHROWERRANGE=150
     DISCMAXSPEED=100
-    SPAWNRATE =1.05
+    SPAWNRATE =0.05
     SECURITYSPAWNRATE = 0.005
 #rebalance
     def __init__(self):
@@ -265,6 +265,7 @@ class DiscoLaserCannon(pygame.sprite.Sprite):
                 if self.laserburntime > self.lasermaxburntime:
                       self.reload_time = 0
                       self.laserburntime = 0
+                      t.sleep(2)
                       self.beam = False
 
                 #lasertimer -= seconds
