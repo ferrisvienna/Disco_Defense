@@ -19,7 +19,7 @@ class Game(object):
     ACTORSPEEDMIN=10
     DISCTHROWERRANGE=150
     DISCMAXSPEED=100
-    SPAWNRATE =0.05
+    SPAWNRATE =0.1
     SECURITYSPAWNRATE = 0.005
 #rebalance
     def __init__(self):
@@ -246,18 +246,25 @@ class DiscoLaserCannon(pygame.sprite.Sprite):
         #DiscoLaserCannonCannon.number += 1           # increase the number for next Bird
         #DiscoLaserCannon.DiscoLaserCannons[self.number] = self
         Healthbar(self)
-        
-        
+        #self.has_target = False
+        self.lasertargettime = 0
+        self.lasertargettimefull = 1
+
     def update(self,seconds):
         self.reload_time += seconds
         if self.hitpoints < 1:
             self.kill()
+        
         if self.reload_time > self.reload_time_full:
             # choose new target
             #opfernummer = None
-            if len(Monster.monsters) > 0:
+            if self.opfernummer is None:
+              
+                   if len(Monster.monsters) > 0:
                       self.opfernummer = random.choice(list(Monster.monsters.keys()))
-                      self.opfer = Monster.monsters[self.opfernummer]  
+                      self.opfer = Monster.monsters[self.opfernummer]
+                      self.lasertargettime = 0
+                      #self.has_target = True
                       #lasertimer = 4 #rebalance
              
             if self.beam: 
@@ -265,8 +272,10 @@ class DiscoLaserCannon(pygame.sprite.Sprite):
                 if self.laserburntime > self.lasermaxburntime:
                       self.reload_time = 0
                       self.laserburntime = 0
-                      t.sleep(2)
+                      
+                      
                       self.beam = False
+                      self.opfernummer = None
 
                 #lasertimer -= seconds
             # gibt es ein Opfer?
@@ -282,9 +291,11 @@ class DiscoLaserCannon(pygame.sprite.Sprite):
                              (self.opfer.pos[0], self.opfer.pos[1]),7)
                         self.opfer.hitpoints-= 1.0
                         self.opfer.burntime = 4.0
+                        #self.hitpoints -= 1
                         #opfer.pos[0] -= 3
                         self.beam = True
-                       
+                    else:
+                        self.opfernummer = None   
         
         
  
@@ -714,7 +725,7 @@ class Viewer(object):
           y+=50
           x=0
         DiscoLaserCannon(500,100, self.screen) 
-        #DiscoLaserCannon(700,100, self.screen) 
+        #DiscoLaserCannon(0, self.screen) 
         #DiscoLaserCannon(600,100, self.screen) 
         #DiscoLaserCannon(400,100, self.screen) 
         #DiscoLaserCannon(900,100, self.screen) 
@@ -744,6 +755,11 @@ class Viewer(object):
                     if event.key==pygame.K_F2:
                         for px in range (0,5):
                             Security(self.game.level, hitpointsfull = 2000)
+                    if event.key == pygame.K_l:
+                        for cheat in range (0,4):
+                            DiscoLaserCannon(random.randint(0,1024),random.randint(0,400),self.screen)
+                            #DiscoLaserCannon(500,100, self.screen)
+                            #DiscoLaserCannon(800,100, self.screen) 
                     # ------CHEAT KEY----------
                     #if event.key==pygame.K_F1:
                        #for px in range (0,240):
