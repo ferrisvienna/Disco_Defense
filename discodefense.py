@@ -19,8 +19,9 @@ class Game(object):
     ACTORSPEEDMIN=10
     DISCTHROWERRANGE=150
     DISCMAXSPEED=100
-    SPAWNRATE =0.1
-    SECURITYSPAWNRATE = 0.005
+    SPAWNRATE =0.05
+    SECURITYSPAWNRATE = 0.0005
+    SPAWNRATE2 =0.005  
 #rebalance
     def __init__(self):
 
@@ -43,6 +44,24 @@ class Game(object):
         Monster.images[4].convert_alpha()
         Monster.images[5].convert_alpha()
         
+        Monster2.images.append(pygame.image.load("data/rockdudel.png")) # 0
+        Monster2.images[0].set_colorkey((255,0,182))
+        Monster2.images.append(pygame.image.load("data/rockdudel1.png")) # 1
+        Monster2.images[1].set_colorkey((255,0,182))
+        Monster2.images.append(pygame.image.load("data/rockdudel.png")) # 2
+        Monster2.images[2].set_colorkey((255,0,182))
+        Monster2.images.append(pygame.image.load("data/rockdudel1.png")) # 3
+        Monster2.images[3].set_colorkey((255,0,182))
+        Monster2.images.append(pygame.image.load("data/rockdudel.png")) # 4
+        Monster2.images[4].set_colorkey((255,0,182))
+        Monster2.images.append(pygame.image.load("data/rockdudel1.png")) # 5
+        Monster2.images[5].set_colorkey((255,0,182))
+        Monster2.images[0].convert_alpha()
+        Monster2.images[1].convert_alpha()
+        Monster2.images[2].convert_alpha()
+        Monster2.images[3].convert_alpha()
+        Monster2.images[4].convert_alpha()
+        Monster2.images[5].convert_alpha()
         
         #Monster_rare.images.append(pygame.image.load("data/walkll1.png")) # 0
         #Monster_rare.images[0].set_colorkey((255,0,182))
@@ -216,6 +235,78 @@ class Fragment(pygame.sprite.Sprite):
             self.rect.centerx = round(self.pos[0],0)
             self.rect.centery = round(self.pos[1],0)
 
+#class DiscoLaserCannon(pygame.sprite.Sprite):
+    ##a laser gun
+    #gravity= False
+    #image=pygame.image.load("data/discogun.png")
+    #number = 0
+    #discoLaserCannons = {}
+    
+    #def __init__(self,x,y, screen):
+        #pygame.sprite.Sprite.__init__(self, self.groups)
+        #self.hitpoints = 300.0
+        #self.hitpointsfull = 300.0
+        #self.reload_time = 0.2
+        #self.reload_time_full = 0.2#
+        #self.image = DiscoLaserCannon.image
+        ##for in images:
+        #self.image.set_colorkey((255,0,182))
+        #self.rect = self.image.get_rect()
+        #self.screen = screen
+        #self.x = x
+        #self.y = y
+        #self.rect.centerx = self.x
+        #self.rect.centery = self.y
+        #self.lasermaxburntime =  random.random()*2+2
+        #self.laserburntime = 0
+        #self.beam = False
+        #self.opfernummer = None
+        #self.number = DiscoLaserCannon.number
+        ##DiscoLaserCannon.number += 1
+        #DiscoLaserCannon.number += 1           # increase the number for next Bird
+        #DiscoLaserCannon.discoLaserCannons[self.number] = self
+        #Healthbar(self)
+        
+        
+    #def update(self,seconds):
+        #self.reload_time += seconds
+        #if self.hitpoints < 1:
+            #self.kill()
+        #if self.reload_time > self.reload_time_full:
+            ## choose new target
+            ##opfernummer = None
+            #if len(Monster.monsters) > 0:
+                      #self.opfernummer = random.choice(list(Monster.monsters.keys()))
+                      #self.opfer = Monster.monsters[self.opfernummer]  
+                      ##lasertimer = 4 #rebalance
+             
+            #if self.beam: 
+                #self.laserburntime += seconds
+                #if self.laserburntime > self.lasermaxburntime:
+                      #self.reload_time = 0
+                      #self.laserburntime = 0
+                     ## t.sleep(2)
+                      #self.beam = False
+
+                ##lasertimer -= seconds
+            ## gibt es ein Opfer?
+            #if self.opfernummer != None:
+                    ##existiert das Opfer noch in der Monstergruppe ?
+                    #if self.opfernummer in Monster.monsters:
+                                                ## tödlicher weißer laser
+                        #pygame.draw.line(self.screen,
+                             #(random.randint(200,255),
+                              #random.randint(200,255),
+                              #random.randint(200,255)),
+                             #(self.x,self.y),
+                             #(self.opfer.pos[0], self.opfer.pos[1]),7)
+                        #self.opfer.hitpoints-= 1.0
+                        #self.opfer.burntime = 4.0
+                        ##opfer.pos[0] -= 3
+                        #self.beam = True
+                       
+        
+        
 class DiscoLaserCannon(pygame.sprite.Sprite):
     #a laser gun
     gravity= False
@@ -259,7 +350,6 @@ class DiscoLaserCannon(pygame.sprite.Sprite):
             # choose new target
             #opfernummer = None
             if self.opfernummer is None:
-              
                    if len(Monster.monsters) > 0:
                       self.opfernummer = random.choice(list(Monster.monsters.keys()))
                       self.opfer = Monster.monsters[self.opfernummer]
@@ -296,9 +386,6 @@ class DiscoLaserCannon(pygame.sprite.Sprite):
                         self.beam = True
                     else:
                         self.opfernummer = None   
-        
-        
- 
 class DiscProjectile(pygame.sprite.Sprite):
         """a projectile of a Disc gun"""
         gravity = False # fragments fall down ?
@@ -398,7 +485,7 @@ class Healthbar(pygame.sprite.Sprite):
 
 
 
-class Monster(pygame.sprite.Sprite):
+class Monster(pygame.sprite.Sprite):  #DISCO GARY GLITTER
         """Generic Monster"""
         images=[]  # list of all images
         # not necessary:
@@ -444,23 +531,6 @@ class Monster(pygame.sprite.Sprite):
             except:
                 char="?"
             return char
-
-
-
-        def kill(self):
-            """because i want to do some special effects (sound, dictionary etc.)
-            before killing the Bird sprite i have to write my own kill(self)
-            function and finally call pygame.sprite.Sprite.kill(self)
-            to do the 'real' killing"""
-            #cry.play()
-            #print Bird.birds, "..."
-            for _ in range(random.randint(7,20)):
-                Fragment(self.pos)
-            #Monster.monsters[self.number] = None # kill Bird in sprite dictionary
-            del(Monster.monsters[self.number]) 
-            pygame.sprite.Sprite.kill(self) # kill the actual Bird
-
-
         def update(self, seconds):
             # friction make birds slower
             #if abs(self.dx) > ACTORSPEEDMIN and abs(self.dy) > BIRDSPEEDMIN:10.000
@@ -527,7 +597,265 @@ class Monster(pygame.sprite.Sprite):
             
             if self.hitpoints <= 0:
                 self.kill()
+                
+                
+class Actor(pygame.sprite.Sprite):  #DISCO GARY GLITTER
+        """Generic Monster"""
+        images=[]  # list of all images
+        # not necessary:
+        actors = {} # a dictionary of all monsters
+        number = 0
 
+        def __init__(self, level, startpos=(100,100), hitpointsfull=600):
+        #rebalance
+
+            pygame.sprite.Sprite.__init__(self, self.groups ) #call parent class. NEVER FORGET !
+            self.burntime = 0.0
+            self.z = 0 # animationsnummer
+            self.duration = 0.0 # how long was the current animation visible in seconds
+            self.level=level
+            self.nomove = False
+            #startpos=(0,screen.get_rect().center[1])
+            self.pos=startpos
+            self.pos = [float(startpos[0]),float (startpos[1])] # dummy values to create a list
+            #self.pos[0] = float(startpos[0]) # float for more precise calculation
+            #self.pos[1] = float(startpos[1])
+            #self.area = screen.get_rect()
+            self.area = pygame.Rect(0,100,1024,300)
+            self.image = Security.images[1]
+            self.hitpointsfull = float(hitpointsfull) # maximal hitpoints , float makes decimal
+            self.hitpoints = float(hitpointsfull) # actual hitpoints
+            self.rect = self.image.get_rect()
+            self.radius = max(self.rect.width, self.rect.height) / 2.0
+            
+            #self.dx = random.random()*10+20
+            #self.dy= random.randint(-70,70)#rebalance
+            self.rect.centerx = round(self.pos[0],0)
+            self.rect.centery = round(self.pos[1],0)
+            #--- not necessary:
+            self.number = Actor.number # get my personal Birdnumber
+            Actor.number+= 1           
+            Actor.actors[self.number] = self
+            Healthbar(self)
+            
+        def getChar(self):
+            #Tile = 50*50
+            x=int(self.pos[0]/50)
+            y=int(self.pos[1]/50)+0 # correction value to get the tile under the feet doesn't actually work :\
+            try:
+                char=self.level[y][x]
+            except:
+                char="?"
+            return char
+            
+        def update(self, seconds):
+            pressed_keys = pygame.key.get_pressed()
+            if pygame.K_UP in pressed_keys:
+                self.y -= 1
+            if pygame.K_DOWN in pressed_keys:
+                self.y += 1
+            #------ check if lava
+            #Animation#
+            # 6 bilder sind in Monster.images []
+            self.duration += seconds
+            if self.duration > 0.5:
+                self.duration= 0
+                self.z  +=1
+                if self.z >= len(Monster.images):
+                    self.z = 0
+                self.image=Monster.images[self.z]
+
+            #-------
+            if self.getChar()=="g":
+                #self.hitpoints-=1 #lava?
+                self.burntime += 1.0
+            if self.getChar()=="?":
+                self.hitpoints=0
+            if self.getChar()=="e":
+                self.hitpoints=0
+                Game.LIVES-=1
+            if self.getChar()=="h":
+                self.nomove = True
+            self.dy=random.randint(-10, 10)
+            self.dx= 20#random.randint(10,10)
+            if self.nomove:
+                self.dx = 0
+            self.pos[0] += self.dx * seconds
+            self.pos[1] += self.dy * seconds
+            # -- check if Bird out of screen
+            if not self.area.contains(self.rect):
+                #self.crashing = True # change colour later
+                # --- compare self.rect and area.rect
+                if self.pos[0] + self.rect.width/2 > self.area.right:
+                    self.pos[0] = self.area.right - self.rect.width/2
+                if self.pos[0] - self.rect.width/2 < self.area.left:
+                    self.pos[0] = self.area.left + self.rect.width/2
+                if self.pos[1] + self.rect.height/2 > self.area.bottom:
+                    self.pos[1] = self.area.bottom - self.rect.height/2
+                if self.pos[1] - self.rect.height/2 < self.area.top:
+                    self.pos[1] = self.area.top + self.rect.height/2
+            #--- calculate new position on screen -----
+            self.rect.centerx = round(self.pos[0],0)
+            self.rect.centery = round(self.pos[1],0)
+            #--- loose hitpoins
+            #if self.crashing:
+             #self.hitpoints -=1
+            
+            if self.burntime > 0 :
+                self.hitpoints -= 1.0
+                # reduce burntime
+                self.burntime -= 0.4
+                Flame(self.rect.centerx, self.rect.centery)
+            
+            if self.hitpoints <= 0:
+                self.kill()
+
+class Monster2(pygame.sprite.Sprite):  #MONSTER ROCK
+        """Generic Monster"""
+        images=[]  # list of all images
+        # not necessary:
+        monsters2 = {} # a dictionary of all monsters
+        number2 = 0
+
+        def __init__(self, level, startpos=(0,200), hitpointsfull=1000):
+        #rebalance
+
+            pygame.sprite.Sprite.__init__(self, self.groups ) #call parent class. NEVER FORGET !
+            self.burntime = 0.0
+            self.z = 0 # animationsnummer
+            self.duration = 0.0 # how long was the current animation visible in seconds
+            self.level=level
+            self.nomove = False
+            #startpos=(0,screen.get_rect().center[1])
+            startpos2=(0,random.randint(100,350))
+            self.pos = [float(startpos2[0]),float (startpos2[1])] # dummy values to create a list
+            #self.pos[0] = float(startpos[0]) # float for more precise calculation
+            #self.pos[1] = float(startpos[1])
+           # self.area = screen.get_rect()
+            self.area = pygame.Rect(0,100,1024,300)
+            self.image = Monster2.images[self.z]
+            self.hitpointsfull = float(hitpointsfull) # maximal hitpoints , float makes decimal
+            self.hitpoints = float(hitpointsfull) # actual hitpoints
+            self.rect = self.image.get_rect()
+            self.radius = max(self.rect.width, self.rect.height) / 2.0
+            self.dx= random.random()*10+20
+            self.dy= random.randint(-70,70)#rebalance
+            self.rect.centerx = round(self.pos[0],0)
+            self.rect.centery = round(self.pos[1],0)
+            #--- not necessary:
+            self.number = Monster2.number2 # get my personal Birdnumber
+            Monster2.number2+= 1           # increase the number for next Bird
+            Monster2.monsters2[self.number] = self #
+            Healthbar(self)
+        def getChar(self):
+            #Tile = 50*50
+            x=int(self.pos[0]/50)
+            y=int(self.pos[1]/50)+0 # correction value to get the tile under the feet doesn't actually work :\
+            try:
+                char=self.level[y][x]
+            except:
+                char="?"
+            return char
+
+
+
+        def kill(self):
+            """because i want to do some special effects (sound, dictionary etc.)
+            before killing the Bird sprite i have to write my own kill(self)
+            function and finally call pygame.sprite.Sprite.kill(self)
+            to do the 'real' killing"""
+            #cry.play()
+            #print Bird.birds, "..."
+            for _ in range(random.randint(7,20)):
+                Fragment(self.pos)
+            #Monster.monsters[self.number] = None # kill Bird in sprite dictionary
+            del(Monster2.monsters2[self.number]) 
+            pygame.sprite.Sprite.kill(self) # kill the actual Bird
+
+
+        def update(self, seconds):
+            # friction make birds slower
+            #if abs(self.dx) > ACTORSPEEDMIN and abs(self.dy) > BIRDSPEEDMIN:10.000
+             #   self.dx *= FRICTION
+              #  self.dy *= FRICTION
+            # spped limit
+            #if abs(self.dx) > BIRDSPEEDMAX:
+             #   self.dx = BIRDSPEEDMAX * self.dx / self.dx
+            #if abs(self.dy) > BIRDSPEEDMAX:
+             #   self.dy = BIRDSPEEDMAX * self.dy / self.dy
+            # new position
+            #------ check if lava
+            #Animation#
+            # 6 bilder sind in Monster.images []
+            self.duration += seconds
+            if self.duration > 0.5:
+                self.duration= 0
+                self.z  +=1
+                if self.z >= len(Monster2.images):
+                    self.z = 0
+                self.image=Monster2.images[self.z]
+
+            #-------
+            if self.getChar()=="g":
+                #self.hitpoints-=1 #lava?
+                self.burntime += 1.0
+            if self.getChar()=="?":
+                self.hitpoints=0
+            if self.getChar()=="e":
+                self.hitpoints=0
+                Game.LIVES-=1
+            if self.getChar()=="h":
+                self.nomove = True
+            self.dy=random.randint(-10, 10)
+            self.dx= 20#random.randint(10,10)
+            if self.nomove:
+                self.dx = 0
+            self.pos[0] += self.dx * seconds
+            self.pos[1] += self.dy * seconds
+            # -- check if Bird out of screen
+            if not self.area.contains(self.rect):
+                #self.crashing = True # change colour later
+                # --- compare self.rect and area.rect
+                if self.pos[0] + self.rect.width/2 > self.area.right:
+                    self.pos[0] = self.area.right - self.rect.width/2
+                if self.pos[0] - self.rect.width/2 < self.area.left:
+                    self.pos[0] = self.area.left + self.rect.width/2
+                if self.pos[1] + self.rect.height/2 > self.area.bottom:
+                    self.pos[1] = self.area.bottom - self.rect.height/2
+                if self.pos[1] - self.rect.height/2 < self.area.top:
+                    self.pos[1] = self.area.top + self.rect.height/2
+            #--- calculate new position on screen -----
+            self.rect.centerx = round(self.pos[0],0)
+            self.rect.centery = round(self.pos[1],0)
+            #--- loose hitpoins
+            #if self.crashing:
+             #self.hitpoints -=1
+            
+            if self.burntime > 0 :
+                self.hitpoints -= 1.0
+                # reduce burntime
+                self.burntime -= 0.4
+                Flame(self.rect.centerx, self.rect.centery)
+            
+            if self.hitpoints <= 0:
+                self.kill()
+
+
+        def kill(self):
+            """because i want to do some special effects (sound, dictionary etc.)
+            before killing the Bird sprite i have to write my own kill(self)
+            function and finally call pygame.sprite.Sprite.kill(self)
+            to do the 'real' killing"""
+            #cry.play()
+            #print Bird.birds, "..."
+            for _ in range(random.randint(7,20)):
+                Fragment(self.pos)
+            #Monster.monsters[self.number] = None # kill Bird in sprite dictionary
+            del(Monster2.monsters2[self.number]) 
+            pygame.sprite.Sprite.kill(self) # kill the actual Bird
+
+
+   
 class Security(pygame.sprite.Sprite):
         """Generic Monster"""
         images=[]  # list of all images
@@ -665,6 +993,8 @@ class Viewer(object):
         """Initialize pygame, window, background, font,...
            default arguments
         """
+        
+        
 
         pygame.mixer.pre_init(44100, -16, 2, 2048) # setup mixer to avoid sound lag
         pygame.init()
@@ -702,14 +1032,17 @@ class Viewer(object):
         self.bargroup = pygame.sprite.Group()
         self.fragmentgroup = pygame.sprite.Group()
         self.securitygroup= pygame.sprite.Group()
+        self.actorgroup = pygame.sprite.Group()
 
         DiscProjectile.groups = self.allgroup, self.projectilegroup
         DiscoLaserCannon.groups = self.allgroup, self.cannongroup
-        Monster.groups =  self.allgroup, self.monstergroup
+        Monster.groups = self.allgroup, self.monstergroup
+        Monster2.groups =  self.allgroup, self.monstergroup
         Fragment.groups = self.allgroup, self.fragmentgroup
         Healthbar.groups = self.allgroup, self.bargroup
         Flame.groups = self.allgroup      
         Security.groups = self.allgroup, self.securitygroup
+        Actor.groups = self.allgroup, self.actorgroup
         self.game = Game()
         
      def paint(self):
@@ -725,7 +1058,7 @@ class Viewer(object):
           y+=50
           x=0
         DiscoLaserCannon(500,100, self.screen) 
-        #DiscoLaserCannon(0, self.screen) 
+        #DiscoLaserCannon(700,100, self.screen) 
         #DiscoLaserCannon(600,100, self.screen) 
         #DiscoLaserCannon(400,100, self.screen) 
         #DiscoLaserCannon(900,100, self.screen) 
@@ -735,7 +1068,7 @@ class Viewer(object):
         #DiscoLaserCannon(400,450, self.screen) 
         #DiscoLaserCannon(900,550, self.screen) 
         #DiscoLaserCannon()
-        
+        Actor((100,100))
           
      def run(self):
         """The mainloop
@@ -755,16 +1088,15 @@ class Viewer(object):
                     if event.key==pygame.K_F2:
                         for px in range (0,5):
                             Security(self.game.level, hitpointsfull = 2000)
-                    if event.key == pygame.K_l:
-                        for cheat in range (0,4):
-                            DiscoLaserCannon(random.randint(0,1024),random.randint(0,400),self.screen)
-                            #DiscoLaserCannon(500,100, self.screen)
-                            #DiscoLaserCannon(800,100, self.screen) 
                     # ------CHEAT KEY----------
                     #if event.key==pygame.K_F1:
                        #for px in range (0,240):
                            #DiscProjectile(pos=(random.randint(540,1024),random.randint(100,400)))12
-
+            
+            self.pressed_keys = pygame.key.get_pressed()
+            if pygame.K_F1 in self.pressed_keys:
+                pass
+            
             milliseconds = self.clock.tick(self.fps)
             millis += milliseconds
             seconds=milliseconds /1000.0
@@ -781,9 +1113,14 @@ class Viewer(object):
             if random.random()<self.game.SPAWNRATE:
                Monster(self.game.level)
                
+            if random.random()<self.game.SPAWNRATE2:
+               Monster2(self.game.level)
                
             if random.random()<self.game.SECURITYSPAWNRATE:
                Security(self.game.level)
+               
+            if pygame.K_s in self.pressed_keys:
+                Actor(self.game.level)
 
             # spritecollide
             
