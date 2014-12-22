@@ -797,19 +797,22 @@ class Monster2(pygame.sprite.Sprite):  #MONSTER ROCK
                       #print[self.opfer]
                       #self.lasertargettime = 0
                       if self.opfer.y < self.pos[1]:
-                          self.pos[1]-=2
-                          #print("have to make x smaller")
+                          self.pos[1]-=0.1
+                          print("have to make x smaller")
                       if self.opfer.y > self.pos[1]:
-                          self.pos[1]+=2
-                          #print("have to mske x bigger")
+                          self.pos[1]+=0.1
+                          print("have to mske x bigger")
                       if self.opfer.y == self.pos[1]:
-                        self.pos[1]=self.pos[1]  
-                        
+                        self.pos[1]=self.pos[1]
+                          
+            elif(Actor.actors) == 0:
+                self.dy = random.randint(-20,20)
+            
             self.dx= 20#random.randint(10,10)
             if self.nomove:
                 self.dx = 0
             self.pos[0] += self.dx * seconds
-            self.pos[1] += self.dy * seconds
+            #self.pos[1] += self.dy * seconds
             # -- check if Bird out of screen
             if not self.area.contains(self.rect):
                 #self.crashing = True # change colour later
