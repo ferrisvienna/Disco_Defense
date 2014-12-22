@@ -12,6 +12,7 @@ import random
 import pygame
 import time as t
 
+
 class Game(object):
     LIVES=20
     FORCE_OF_GRAVITY=3
@@ -19,9 +20,9 @@ class Game(object):
     ACTORSPEEDMIN=10
     DISCTHROWERRANGE=150
     DISCMAXSPEED=100
-    SPAWNRATE =0.505
+    SPAWNRATE =0.005
     SECURITYSPAWNRATE = 0.0005
-    SPAWNRATE2 =0.505  
+    SPAWNRATE2 =0.005  
 #rebalance
     def __init__(self):
 
@@ -181,8 +182,8 @@ class Game(object):
         self.o[0].set_colorkey((255,0,182))
         self.o[1].set_colorkey((255,0,182))
         self.anim=0         
-        self.level=["hpppppoppppppwppppope",
-                    "ihpppppppppihippppppe",
+        self.level=["hpppppoppppppwppppppe",
+                    "ihpppppppppihippppope",
                     "idddgddddddhidvddddde",
                     "ddddgddddddddddddddde",
                     "gdddgddgdvddddkddddve",
@@ -622,9 +623,9 @@ class Actor(pygame.sprite.Sprite):
 
             pygame.sprite.Sprite.__init__(self, self.groups ) #call parent class. NEVER FORGET !
             self.burntime = 0.0
-            print("i bin do")
-            self.x = startpos[0]
-            self.y = startpos[1]
+            #print("i bin do")
+            Actor.x = startpos[0]
+            Actor.y = startpos[1]
             self.z = 0 # animationsnummer
             self.duration = 0.0 # how long was the current animation visible in seconds
             self.level=level
@@ -643,6 +644,7 @@ class Actor(pygame.sprite.Sprite):
             self.radius = max(self.rect.width, self.rect.height) / 2.0
             self.dx = 0
             self.dy = 0
+            self.regen = 0.5
             #self.dx = random.random()*10+20
             #self.dy= random.randint(-70,70)#rebalance
             self.rect.centerx = self.x
@@ -673,12 +675,39 @@ class Actor(pygame.sprite.Sprite):
                 self.x -= 3
             if pressed_keys[pygame.K_RIGHT]:
                 self.x += 3
+            #if pressed_keys[pygame.K_UP] and pressed_keys[pygame.K_RSHIFT]:
+                #self.y -= 5
+            #if pressed_keys[pygame.K_DOWN] and pressed_keys[pygame.K_RSHIFT]:
+                #self.y += 5
+            #if pressed_keys[pygame.K_LEFT] and pressed_keys[pygame.K_RSHIFT]:
+                #self.x -= 5
+            #if pressed_keys[pygame.K_RIGHT] and pressed_keys[pygame.K_RSHIFT]:
+                #self.x += 5
+            if pressed_keys[pygame.K_w]:
+                self.y -= 5
+                self.hitpoints -=1.5
+            if pressed_keys[pygame.K_s]:
+                self.y += 5
+                self.hitpoints -=1.5
+            if pressed_keys[pygame.K_a]:
+                self.x -= 5
+                self.hitpoints -= 1.5
+            if pressed_keys[pygame.K_d]:
+                self.x += 5
+                self.hitpoints -=1.5
             self.rect.centerx = self.x
             self.rect.centery = self.y
-            
             if self.hitpoints< self.hitpointsfull:
-                self.hitpoints+= 2
-          
+                self.hitpoints+= self.regen
+            
+            #self.mouse=pygame.mouse.get_pos()
+            #pygame.mouse.set_pos(self.mouse[0]-5,self.mouse[1]-5)
+            
+            #self.x=self.mouse[0]
+            #self.y=self.mouse[1]
+            
+            if self.getChar()=="p":
+                self.hitpoints=1
             
             if self.hitpoints <= 0:
                 self.kill()
@@ -736,19 +765,6 @@ class Monster2(pygame.sprite.Sprite):  #MONSTER ROCK
 
 
         def update(self, seconds):
-            # friction make birds slower
-            #if abs(self.dx) > ACTORSPEEDMIN and abs(self.dy) > BIRDSPEEDMIN:10.000
-             #   self.dx *= FRICTION
-              #  self.dy *= FRICTION
-            # spped limit
-            #if abs(self.dx) > BIRDSPEEDMAX:
-             #   self.dx = BIRDSPEEDMAX * self.dx / self.dx
-            #if abs(self.dy) > BIRDSPEEDMAX:
-             #   self.dy = BIRDSPEEDMAX * self.dy / self.dy
-            # new position
-            #------ check if lava
-            #Animation#
-            # 6 bilder sind in Monster.images []
             self.duration += seconds
             if self.duration > 0.5:
                 self.duration= 0
@@ -768,7 +784,27 @@ class Monster2(pygame.sprite.Sprite):  #MONSTER ROCK
                 Game.LIVES-=1
             if self.getChar()=="h":
                 self.nomove = True
-            self.dy=random.randint(-10, 10)
+            #if len(Actor.actors) > 0:
+                #if Game.Actorx < self.pos[0]:
+                 #   self.pos[0]+=1
+                #if Game.Actorx > self.pos[0]:
+                 #   self.pos[0]-=1
+            
+            if len(Actor.actors) > 0:
+                      print(len(Actor.actors))
+                      self.opfernummer = random.choice(list(Actor.actors.keys()))
+                      self.opfer = Actor.actors[self.opfernummer]
+                      #print[self.opfer]
+                      #self.lasertargettime = 0
+                      if self.opfer.y < self.pos[1]:
+                          self.pos[1]-=2
+                          #print("have to make x smaller")
+                      if self.opfer.y > self.pos[1]:
+                          self.pos[1]+=2
+                          #print("have to mske x bigger")
+                      if self.opfer.y == self.pos[1]:
+                        self.pos[1]=self.pos[1]  
+                        
             self.dx= 20#random.randint(10,10)
             if self.nomove:
                 self.dx = 0
@@ -1156,9 +1192,10 @@ class Viewer(object):
             for mymonster in self.monstergroup:
                 crashgroup = pygame.sprite.spritecollide(mymonster, self.actorgroup, False)
                 for myactor in crashgroup:
-                      mymonster.hitpoints-=10
-                      mymonster.pos[0] -= 5 # test for collision with bullet
-                      myactor.hitpoints-=20.25
+                      mymonster.hitpoints-= 10
+                      mymonster.pos[0] -= 10
+                      myactor.x += 10
+                      myactor.hitpoints-=20.00
             #and securitys
             for mysecurity in self.securitygroup:
                 crashgroup = pygame.sprite.spritecollide(mysecurity, self.monstergroup, False)
