@@ -21,14 +21,14 @@ class Game(object):
     DISCTHROWERRANGE = 150
     DISCMAXSPEED = 100
     SPAWNRATE = 0.005
-    SECURITYSPAWNRATE = 0.0005
+    SECURITYSPAWNRATE = 0.0095
     SPAWNRATE2 = 0.005
     XP = 0
     ACTOR_REGEN = 0.5
-    ACTOR_ATKDMG = 100
-    ACTOR_DEF = 500
+    ACTOR_ATKDMG = 1000
+    ACTOR_DEF = 5
     ACTOR_SPEED = 3
-    ACTOR_KB = 10
+    ACTOR_KB = 100
     ACTOR_LVL = 1
     
 #rebalance
@@ -323,15 +323,16 @@ class DiscoLaserCannon(pygame.sprite.Sprite):
     gravity= False
     image=pygame.image.load("data/discogun.png")
     number = 0
+    discolasercannons = {}
     
     def __init__(self,x,y, screen):
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.hitpoints = 300.0
         self.hitpointsfull = 300.0
         self.reload_time = 0.2
-        self.reload_time_full = 0.2#
+        self.reload_time_full = 0.2
         self.image = DiscoLaserCannon.image
-        #efor  in images:
+        #for  in images:
         self.image.set_colorkey((255,0,182))
         self.rect = self.image.get_rect()
         self.screen = screen
@@ -344,13 +345,14 @@ class DiscoLaserCannon(pygame.sprite.Sprite):
         self.beam = False
         self.Victimnumber = None
         self.number = DiscoLaserCannon.number
-        DiscoLaserCannon.number += 1
-        #DiscoLaserCannonCannon.number += 1           # increase the number for next Bird
-        #DiscoLaserCannon.DiscoLaserCannons[self.number] = self
+        self.number += 1
+        self.number += 1           # increase the number for next Bird
+        self.discolasercannons[self.number] = self
         Healthbar(self)
         #self.has_target = False
         self.lasertargettime = 0
         self.lasertargettimefull = 1
+        self.number = self.number # get my personal Birdnumber
 
     def update(self,seconds):
         self.reload_time += seconds
@@ -742,6 +744,7 @@ class Monster2(pygame.sprite.Sprite):  #MONSTER ROCK
 
             pygame.sprite.Sprite.__init__(self, self.groups ) #call parent class. NEVER FORGET !
             self.burntime = 0.0
+            self.move = 0
             self.z = 0 # animationsnumber
             self.duration = 0.0 # how long was the current animation visible in seconds
             self.level=level
@@ -777,11 +780,6 @@ class Monster2(pygame.sprite.Sprite):  #MONSTER ROCK
                 char="?"
             return char
 
-
-
-
-
-
         def update(self, seconds):
             self.duration += seconds
             if self.duration > 0.5:
@@ -804,22 +802,28 @@ class Monster2(pygame.sprite.Sprite):  #MONSTER ROCK
                 self.nomove = True
 
             
-            if len(Actor.actors) > 0:
-                      #print(len(Actor.actors))
-                      self.victimnumber = random.choice(list(Actor.actors.keys()))
-                      self.victim = Actor.actors[self.victimnumber]
-                      if self.victim.x > self.pos[0]:
-                        if self.victim.y < self.pos[1]:
-                            self.pos[1]-=0.1
-                        if self.victim.y > self.pos[1]:
-                            self.pos[1]+=0.1
-                        if self.victim.y == self.pos[1]:
-                            self.pos[1]=self.pos[1]
+            #if len(DiscoLaserCannon.discolasercannons) > 0:
+                      ##print(len(Actor.actors))
+                      #self.victimnumber = random.choice(list(DiscoLaserCannon.discolasercannons.keys()))
+                      #self.victim = DiscoLaserCannon.discolasercannons[self.victimnumber]
+                      #if self.victim.x > self.pos[0]:
+                        #if self.victim.y < self.pos[1]:
+                            #self.pos[1]-=0.1
+                        #if self.victim.y > self.pos[1]:
+                            #self.pos[1]+=0.1
+                        #if self.victim.y == self.pos[1]:
+                            #self.pos[1]=self.pos[1]
                         
-            elif(Actor.actors) == 0:
+            elif(DiscoLaserCannon.discolasercannons) == 0:
                 self.dy = random.randint(-20,20)
-            
-            self.dx= 20
+            if self.move == 1:
+                self.pos[1] += 20
+                self.move = 0
+            if self.move == 0:
+                self.pos[1] -= 20
+                self.move = 1
+                #self.move = 0
+                #self.dx= 20
             if self.nomove:
                 self.dx = 0
             self.pos[0] += self.dx * seconds
@@ -1215,7 +1219,10 @@ class Viewer(object):
                       mymonster.hitpoints-= Game.ACTOR_ATKDMG
                       mymonster.pos[0] -= 10
                       myactor.x += 10
-                      myactor.hitpoints-=30.00 - Game.ACTOR_DEF
+                      if Game.ACTOR_DEF < 30:
+                            myactor.hitpoints -= 30.00 - Game.ACTOR_DEF
+                      elif Game.ACTOR_DEF >= 30:
+                            myactor.hitpoints -= 1
             #and securitys
             for mysecurity in self.securitygroup:
                 crashgroup = pygame.sprite.spritecollide(mysecurity, self.monstergroup, False)
