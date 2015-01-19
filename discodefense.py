@@ -35,17 +35,17 @@ class Game(object):
 #rebalance
     def __init__(self):
 
-        Monster.images.append(pygame.image.load("data/discodudel.png")) # 0
+        Monster.images.append(pygame.image.load("data/discodudel.png")) # 0 normal1
         Monster.images[0].set_colorkey((255,0,182))
-        Monster.images.append(pygame.image.load("data/discodudel4.png")) # 1
+        Monster.images.append(pygame.image.load("data/discodudel4.png")) # 1 normal2
         Monster.images[1].set_colorkey((255,0,182))
-        Monster.images.append(pygame.image.load("data/discodudel.png")) # 2
+        Monster.images.append(pygame.image.load("data/discodudel.png")) # 2  normal3
         Monster.images[2].set_colorkey((255,0,182))
-        Monster.images.append(pygame.image.load("data/discodudel2.png")) # 3
+        Monster.images.append(pygame.image.load("data/discodudel2.png")) # 3 fight1
         Monster.images[3].set_colorkey((255,0,182))
-        Monster.images.append(pygame.image.load("data/discodudel3.png")) # 4
+        Monster.images.append(pygame.image.load("data/discodudel3.png")) # 4 fight2
         Monster.images[4].set_colorkey((255,0,182))
-        Monster.images.append(pygame.image.load("data/discodudel2.png")) # 5
+        Monster.images.append(pygame.image.load("data/discodudel2.png")) # 5 fight3
         Monster.images[5].set_colorkey((255,0,182))
         Monster.images[0].convert_alpha()
         Monster.images[1].convert_alpha()
@@ -54,24 +54,24 @@ class Game(object):
         Monster.images[4].convert_alpha()
         Monster.images[5].convert_alpha()
         
-        Monster2.images.append(pygame.image.load("data/rockdudel.png")) # 0
-        Monster2.images[0].set_colorkey((255,0,182))
-        Monster2.images.append(pygame.image.load("data/rockdudel1.png")) # 1
-        Monster2.images[1].set_colorkey((255,0,182))
-        Monster2.images.append(pygame.image.load("data/rockdudel.png")) # 2
-        Monster2.images[2].set_colorkey((255,0,182))
-        Monster2.images.append(pygame.image.load("data/rockdudel1.png")) # 3
-        Monster2.images[3].set_colorkey((255,0,182))
-        Monster2.images.append(pygame.image.load("data/rockdudel.png")) # 4
-        Monster2.images[4].set_colorkey((255,0,182))
-        Monster2.images.append(pygame.image.load("data/rockdudel1.png")) # 5
-        Monster2.images[5].set_colorkey((255,0,182))
-        Monster2.images[0].convert_alpha()
-        Monster2.images[1].convert_alpha()
-        Monster2.images[2].convert_alpha()
-        Monster2.images[3].convert_alpha()
-        Monster2.images[4].convert_alpha()
-        Monster2.images[5].convert_alpha()
+        Monster.images.append(pygame.image.load("data/rockdudel.png")) # 6  normal1
+        Monster.images[6].set_colorkey((255,0,182))
+        Monster.images.append(pygame.image.load("data/rockdudel1.png")) # 7  normal2
+        Monster.images[7].set_colorkey((255,0,182))
+        Monster.images.append(pygame.image.load("data/rockdudel.png")) # 8   normal3
+        Monster.images[8].set_colorkey((255,0,182))
+        Monster.images.append(pygame.image.load("data/rockdudel1.png")) # 9 fight1
+        Monster.images[9].set_colorkey((255,0,182))
+        Monster.images.append(pygame.image.load("data/rockdudel.png")) # 10   fitht2
+        Monster.images[10].set_colorkey((255,0,182))
+        Monster.images.append(pygame.image.load("data/rockdudel1.png")) # 11   figth3
+        Monster.images[11].set_colorkey((255,0,182))
+        Monster.images[6].convert_alpha()
+        Monster.images[7].convert_alpha()
+        Monster.images[8].convert_alpha()
+        Monster.images[9].convert_alpha()
+        Monster.images[10].convert_alpha()
+        Monster.images[11].convert_alpha()
         
         
         Security.images.append(pygame.image.load("data/securityw1.png")) # 0
@@ -180,7 +180,7 @@ class Game(object):
                     "dddddddddddddddddddde",
                     "dddddddddddddddddddde",
                     "dddddddddddddddddddde",
-                    "ddddddddddddddddddddd"]
+                    "dddddddddddddddddddde"]
         anim = 0
         self.legende={"h":self.h[anim],#towertop
                       "p":self.p,#nothing
@@ -484,114 +484,7 @@ class Healthbar(pygame.sprite.Sprite):
 
 
 
-class Monster(pygame.sprite.Sprite):  #DISCO GARY GLITTER
-        """Generic Monster"""
-        images=[]  # list of all images
-        # not necessary:
-        monsters = {} # a dictionary of all monsters
-        number = 0
 
-        def __init__(self, level, startpos=(0,200), hitpointsfull=600):
-        #rebalance
-
-            pygame.sprite.Sprite.__init__(self, self.groups ) #call parent class. NEVER FORGET !
-            self.burntime = 0.0
-            self.z = 0 # animationsnumber
-            self.duration = 0.0 # how long was the current animation visible in seconds
-            self.level=level
-            self.nomove = False
-            #startpos=(0,screen.get_rect().center[1])
-            startpos=(0,random.randint(100,350))
-            self.pos = [float(startpos[0]),float (startpos[1])] # dummy values to create a list
-           # self.area = screen.get_rect()
-            self.area = pygame.Rect(0,100,1024,300)
-            self.image = Monster.images[self.z]
-            self.hitpointsfull = float(hitpointsfull) # maximal hitpoints , float makes decimal
-            self.hitpoints = float(hitpointsfull) # actual hitpoints
-            self.rect = self.image.get_rect()
-            self.radius = max(self.rect.width, self.rect.height) / 2.0
-            self.dx= random.random()*10+20
-            self.dy= random.randint(-70,70)#rebalance
-            self.rect.centerx = round(self.pos[0],0)
-            self.rect.centery = round(self.pos[1],0)
-            #--- not necessary:
-            self.number = Monster.number # get my personal Birdnumber
-            Monster.number+= 1           # increase the number for next Bird
-            Monster.monsters[self.number] = self #
-            Healthbar(self)
-        def getChar(self):
-            #Tile = 50*50
-            x=int(self.pos[0]/50)
-            y=int(self.pos[1]/50)+0 # correction value to get the tile under the feet doesn't actually work :\
-            try:
-                char=self.level[y][x]
-            except:
-                char="?"
-            return char
-        def update(self, seconds):
-            #------ check if lava
-            #Animation#
-            # 6 bilder sind in Monster.images []
-            
-            self.duration += seconds
-            if self.duration > 0.5:
-                self.duration= 0
-                self.z  +=1
-                if self.z >= len(Monster.images):
-                    self.z = 0
-                self.image=Monster.images[self.z]
-            #-------
-            if self.getChar()=="g":
-                #self.hitpoints-=1 #lava?
-                self.burntime += 1.0
-            if self.getChar()=="?":
-                self.hitpoints = 0
-            if self.getChar()=="e":
-                self.hitpoints= 0
-                Game.LIVES-=1
-            if self.getChar()=="h":
-                self.nomove = True
-            self.dy=random.randint(-10, 10)
-            self.dx= 20#random.randint(10,10)
-            if self.nomove:
-                self.dx = 0
-            self.pos[0] += self.dx * seconds
-            self.pos[1] += self.dy * seconds
-            # -- check if Bird out of screen
-            if not self.area.contains(self.rect):
-                #self.crashing = True # change colour later
-                # --- compare self.rect and area.rect
-                if self.pos[0] + self.rect.width/2 > self.area.right:
-                    self.pos[0] = self.area.right - self.rect.width/2
-                if self.pos[0] - self.rect.width/2 < self.area.left:
-                    self.pos[0] = self.area.left + self.rect.width/2
-                if self.pos[1] + self.rect.height/2 > self.area.bottom:
-                    self.pos[1] = self.area.bottom - self.rect.height/2
-                if self.pos[1] - self.rect.height/2 < self.area.top:
-                    self.pos[1] = self.area.top + self.rect.height/2
-            #--- calculate new position on screen -----
-            self.rect.centerx = round(self.pos[0],0)
-            self.rect.centery = round(self.pos[1],0)
-            #--- loose hitpoins
-            #if self.crashing:
-             #self.hitpoints -=1
-            
-            if self.burntime > 0 :
-                self.hitpoints -= 1.0
-                # reduce burntime
-                self.burntime -= 0.4
-                Flame(self.rect.centerx, self.rect.centery)
-            
-            if self.hitpoints < 0:
-                self.kill()
-        def kill(self):
-            for _ in range(random.randint(7,20)):
-                    Fragment(self.pos)
-                    #Monster.monsters[self.number] = None # kill Bird in sprite dictionary
-            del(Monster.monsters[self.number]) 
-            pygame.sprite.Sprite.kill(self) # kill the actual Monster
-            Game.XP += 50
-            Game.COINS += 50
                 
 class Actor(pygame.sprite.Sprite):  
         """Generic Monster"""
@@ -689,14 +582,14 @@ class Actor(pygame.sprite.Sprite):
             if self.hitpoints <= 0:
                 self.kill()
 
-class Monster2(pygame.sprite.Sprite):  #MONSTER ROCK
+class Monster(pygame.sprite.Sprite):  #DISCO GARY GLITTER
         """Generic Monster"""
         images=[]  # list of all images
         # not necessary:
-        monsters2 = {} # a dictionary of all monsters
-        number2 = 0
+        monsters = {} # a dictionary of all monsters
+        number = 0
 
-        def __init__(self, level, startpos=(0,200), hitpointsfull=1000):
+        def __init__(self, level, x=0,y=0, hitpointsfull=600, startimagenumber = 0):
         #rebalance
 
             pygame.sprite.Sprite.__init__(self, self.groups ) #call parent class. NEVER FORGET !
@@ -705,121 +598,150 @@ class Monster2(pygame.sprite.Sprite):  #MONSTER ROCK
             self.duration = 0.0 # how long was the current animation visible in seconds
             self.level=level
             self.nomove = False
-            #startpos=(0,screen.get_rect().center[1])
-            startpos2=(0,random.randint(100,350))
-            self.pos = [float(startpos2[0]),float (startpos2[1])] # dummy values to create a list
-            #self.pos[0] = float(startpos[0]) # float for more precise calculation
-            #self.pos[1] = float(startpos[1])
-           # self.area = screen.get_rect()
+            self.x = float(30)
+            self.y = float(100)
+            if self.x == 0 and self.y == 0:
+                self.x = 30
+                self.y = random.randint(100,350)
             self.area = pygame.Rect(0,100,1024,300)
-            self.image = Monster2.images[self.z]
+            self.image = Monster.images[self.z]
             self.hitpointsfull = float(hitpointsfull) # maximal hitpoints , float makes decimal
             self.hitpoints = float(hitpointsfull) # actual hitpoints
             self.rect = self.image.get_rect()
             self.radius = max(self.rect.width, self.rect.height) / 2.0
+            self.damage = random.randint(1,3)
             self.dx= random.random()*10+20
             self.dy= random.randint(-70,70)#rebalance
-            self.rect.centerx = round(self.pos[0],0)
-            self.rect.centery = round(self.pos[1],0)
+            self.rect.centerx = self.x
+            self.rect.centery = self.y
             #--- not necessary:
-            self.number = Monster2.number2 # get my personal Birdnumber
-            Monster2.number2+= 1           # increase the number for next Bird
-            Monster2.monsters2[self.number] = self #
+            self.number = Monster.number 
+            Monster.number+= 1           
+            Monster.monsters[self.number] = self #
             Healthbar(self)
+        
+        
         def getChar(self):
             #Tile = 50*50
-            x=int(self.pos[0]/50)
-            y=int(self.pos[1]/50)+0 # correction value to get the tile under the feet doesn't actually work :\
+            tilex=int(self.x/50)
+            tiley=int(self.y/50)+50 # correction value to get the tile under the feet doesn't actually work :\
             try:
                 char=self.level[y][x]
             except:
                 char="?"
             return char
 
+        def move(self, seconds):
+            self.dy=random.randint(-10, 10)
+            self.dx= 40 #random.randint(10,10)
+            #if self.nomove:
+            #    self.dx = 0
+            self.x += self.dx * seconds
+            self.y += self.dy * seconds
+            #self.check_area()
+            #--- calculate new position on screen -----
+            print(self.x)
+            self.rect.centerx = round(self.x,0)
+            self.rect.centery = round(self.y,0)
 
-
-
-
+        def check_area(self):
+             
+            # -- check if Bird out of screen
+            if not self.area.contains(self.rect):
+                #self.crashing = True # change colour later
+                # --- compare self.rect and area.rect
+                if self.x + self.rect.width/2 > self.area.right:
+                    self.x = self.area.right - self.rect.width/2
+                if self.x - self.rect.width/2 < self.area.left:
+                    self.x = self.area.left + self.rect.width/2
+                if self.y + self.rect.height/2 > self.area.bottom:
+                    self.y = self.area.bottom - self.rect.height/2
+                if self.y - self.rect.height/2 < self.area.top:
+                    self.y = self.area.top + self.rect.height/2
 
         def update(self, seconds):
+            #------ check if lava
+            #Animation#
+            # 6 bilder sind in Monster.images []
+            
             self.duration += seconds
             if self.duration > 0.5:
                 self.duration= 0
                 self.z  +=1
-                if self.z >= len(Monster2.images):
+                if self.z >= len(Monster.images):
                     self.z = 0
-                self.image=Monster2.images[self.z]
-
-            #-------
-            if self.getChar()=="g":
-                self.hitpoints-= 0.5 #lava?
-                self.burntime += 1.0
+                self.image=Monster.images[self.z]
+            #------- FIGHTING?????????????????????????? ---------- TODO -----------
             if self.getChar()=="?":
-                self.hitpoints=0
+                self.hitpoints = 0
             if self.getChar()=="e":
-                self.hitpoints=0
-                Game.LIVES-=1
-            if self.getChar()=="h":
-                self.nomove = True
+                self.hitpoints= 0
+                Game.LIVES-=1   # play loose health because monster reaches edge of screen
+            print("movE")
+            self.move(seconds)
+            
 
-            
-            if len(Actor.actors) > 0:
-                      #print(len(Actor.actors))
-                      self.victimnumber = random.choice(list(Actor.actors.keys()))
-                      self.victim = Actor.actors[self.victimnumber]
-                      if self.victim.x > self.pos[0]:
-                        if self.victim.y < self.pos[1]:
-                            self.pos[1]-=0.1
-                        if self.victim.y > self.pos[1]:
-                            self.pos[1]+=0.1
-                        if self.victim.y == self.pos[1]:
-                            self.pos[1]=self.pos[1]
-                        
-            elif(Actor.actors) == 0:
-                self.dy = random.randint(-20,20)
-            
-            self.dx= 20
-            if self.nomove:
-                self.dx = 0
-            self.pos[0] += self.dx * seconds
-            #self.pos[1] += self.dy * seconds
-            # -- check if monster is on screen
-            if not self.area.contains(self.rect):
-                
-                # --- compare self.rect and area.rect
-                if self.pos[0] + self.rect.width/2 > self.area.right:
-                    self.pos[0] = self.area.right - self.rect.width/2
-                if self.pos[0] - self.rect.width/2 < self.area.left:
-                    self.pos[0] = self.area.left + self.rect.width/2
-                if self.pos[1] + self.rect.height/2 > self.area.bottom:
-                    self.pos[1] = self.area.bottom - self.rect.height/2
-                if self.pos[1] - self.rect.height/2 < self.area.top:
-                    self.pos[1] = self.area.top + self.rect.height/2
-            #--- calculate new position on screen -----
-            self.rect.centerx = round(self.pos[0],0)
-            self.rect.centery = round(self.pos[1],0)
-            #--- loose hitpoints
-            
             if self.burntime > 0 :
                 self.hitpoints -= 1.0
                 # reduce burntime
                 self.burntime -= 0.4
                 Flame(self.rect.centerx, self.rect.centery)
             
-            if self.hitpoints <= 0:
+            if self.hitpoints < 0:
                 self.kill()
-
-
+                
+                
         def kill(self):
             for _ in range(random.randint(7,20)):
                     Fragment(self.pos)
                     #Monster.monsters[self.number] = None # kill Bird in sprite dictionary
-            del(Monster2.monsters2[self.number]) 
+            del(Monster.monsters[self.number]) 
             pygame.sprite.Sprite.kill(self) # kill the actual Monster
             Game.XP += 50
             Game.COINS += 50
 
-
+class Monster1(Monster):  #DISCO GARY GLITTER
+        """white stupid dancer"""
+        
+        def __init__(self, level, x=0,y=0, hitpointsfull=600, startimagenumber=0):
+              Monster.__init__(self, level, x, y, hitpointsfull, startimagenumber)
+        
+class Monster2(Monster):  #MONSTER ROCK
+        """rocker with black leather jacket and guitar"""
+        def __init__(self, level, x=0,y=0, hitpointsfull=900, startimagenumber=4):
+              Monster.__init__(self, level, x, y, hitpointsfull, startimagenumber)
+        
+    
+        def move(self, seconds):
+			
+            if len(Actor.actors) > 0:
+                 #print(len(Actor.actors))
+                 self.victimnumber = random.choice(list(Actor.actors.keys()))
+                 self.victim = Actor.actors[self.victimnumber]
+                 if self.victim.x > self.x:                      
+                     if self.victim.y < self.y:
+                        self.dy=-3
+                     if self.victim.y > self.y:
+                        self.dy=3
+                     if self.victim.y == self.y:
+                        self.dy=0
+                                
+            else:
+                 self.dy = random.randint(-20,20)
+                
+            
+            self.dx= 20  #random.randint(10,10)
+            if self.nomove:
+                self.dx = 0
+            self.x += self.dx * seconds
+            self.y += self.dy * seconds
+            self.check_area()
+            
+            
+           #--- calculate new position on screen -----
+            self.rect.centerx = round(self.x,0)
+            self.rect.centery = round(self.y,0)
+   
    
 class Security(pygame.sprite.Sprite):
         """Generic Monster"""
@@ -998,9 +920,9 @@ class Viewer(object):
         self.actorgroup = pygame.sprite.Group()
 
         DiscProjectile.groups = self.allgroup, self.projectilegroup
-        DiscoLaserCannon.groups = self.allgroup, self.cannongroup
+        DiscoLaserCannon.groups = self.allgroup, self.cannongroup, self.barricadegroup
         Barricade.groups = self.allgroup, self.barricadegroup
-        Monster.groups = self.allgroup, self.monstergroup
+        Monster1.groups = self.allgroup, self.monstergroup
         Monster2.groups =  self.allgroup, self.monstergroup
         Fragment.groups = self.allgroup, self.fragmentgroup
         Healthbar.groups = self.allgroup, self.bargroup
@@ -1097,7 +1019,7 @@ class Viewer(object):
 
             # monster spawn
             if random.random()<self.game.SPAWNRATE:
-               Monster(self.game.level)
+               Monster1(self.game.level)
                
             if random.random()<self.game.SPAWNRATE2:
                Monster2(self.game.level)
@@ -1168,16 +1090,15 @@ class Viewer(object):
                       #mymonster.pos[0] -= 5 # test for collision with bullet
                       myprojectile.hitpoints-=0.25
             for mymonster in self.monstergroup:
-                crashgroup = pygame.sprite.spritecollide(mymonster, self.cannongroup, False)
-                for mycannon in crashgroup:
-                      #mymonster.hitpoints-=0.25
-                      #mymonster.pos[0] -= 5 # test for collision with bullet
-                      mycannon.hitpoints-=0.25
+                crashgroup = pygame.sprite.spritecollide(mymonster, self.barricadegroup, False)
+                for mybarricade in crashgroup:
+                      mybarricade.hitpoints-= mymonster.damage
+                      mymonster.x -= 10
             for mymonster in self.monstergroup:
                 crashgroup = pygame.sprite.spritecollide(mymonster, self.actorgroup, False)
                 for myactor in crashgroup:
                       mymonster.hitpoints-= Game.ACTOR_ATKDMG
-                      mymonster.pos[0] -= 10
+                      mymonster.x -= 10
                       myactor.x += 10
                       myactor.hitpoints-=30.00 - Game.ACTOR_DEF
             #and securitys
@@ -1186,7 +1107,7 @@ class Viewer(object):
                 mysecurity.taser = False
                 for mymonster in crashgroup:
                       mymonster.hitpoints-=4 # test for collision with bullet
-                      mymonster.pos[0]-=random.randint(5,20)
+                      mymonster.x-=random.randint(5,20)
                       mysecurity.hitpoints-=5
                       mysecurity.pos[0]+=random.randint(1,7)
                       mysecurity.taser = True
